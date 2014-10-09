@@ -1,0 +1,35 @@
+{
+  "name": "limes",
+  "version": "0.1.0",
+  "description": "limes authenticates users.",
+  "contributors": [
+    {
+      "name": "Golo Roden",
+      "email": "golo.roden@thenativeweb.io"
+    },
+    {
+      "name": "Matthias Wagler",
+      "email": "matthias.wagler@thenativeweb.io"
+    }
+  ],
+  "main": "lib/Limes.js",
+  "dependencies": {
+    "express-jwt": "0.4.0",
+    "jsonwebtoken": "1.1.2",
+    "middleware-flow": "0.6.0"
+  },
+  "devDependencies": {
+    "express": "4.9.6",
+    "grunt": "0.4.5",
+    "node-assertthat": "0.2.1",
+    "socket.io": "1.1.0",
+    "socket.io-client": "1.1.0",
+    "supertest": "0.14.0",
+    "tourism": "0.7.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/thenativeweb/limes.git"
+  },
+  "license": "MIT"
+}
