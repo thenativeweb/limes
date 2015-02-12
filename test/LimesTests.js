@@ -4,7 +4,7 @@ var fs = require('fs'),
     http = require('http'),
     path = require('path');
 
-var assert = require('node-assertthat'),
+var assert = require('assertthat'),
     express = require('express'),
     jwt = require('jsonwebtoken'),
     request = require('supertest'),
@@ -19,21 +19,21 @@ var certificate = fs.readFileSync(path.join(__dirname, 'keys', 'certificate.pem'
 /*eslint-disable no-new*/
 suite('Limes', function () {
   test('is a function.', function (done) {
-    assert.that(Limes, is.ofType('function'));
+    assert.that(Limes).is.ofType('function');
     done();
   });
 
   test('throws an exception if options are missing.', function (done) {
     assert.that(function () {
       new Limes();
-    }, is.throwing('Options are missing.'));
+    }).is.throwing('Options are missing.');
     done();
   });
 
   test('throws an exception if identity provider name is missing.', function (done) {
     assert.that(function () {
       new Limes({});
-    }, is.throwing('Identity provider name is missing.'));
+    }).is.throwing('Identity provider name is missing.');
     done();
   });
 
@@ -42,7 +42,7 @@ suite('Limes', function () {
       new Limes({
         identityProviderName: 'auth.example.com'
       });
-    }, is.throwing('Specify private key and / or certificate.'));
+    }).is.throwing('Specify private key and / or certificate.');
     done();
   });
 
@@ -53,7 +53,7 @@ suite('Limes', function () {
         privateKey: privateKey,
         certificate: certificate
       });
-      assert.that(limes.issueTokenFor, is.ofType('function'));
+      assert.that(limes.issueTokenFor).is.ofType('function');
       done();
     });
 
@@ -65,7 +65,7 @@ suite('Limes', function () {
       });
       assert.that(function () {
         limes.issueTokenFor();
-      }, is.throwing('Subject is missing.'));
+      }).is.throwing('Subject is missing.');
       done();
     });
 
@@ -79,10 +79,10 @@ suite('Limes', function () {
       var token = limes.issueTokenFor('test.domain.com', { foo: 'bar' });
 
       jwt.verify(token, certificate, { issuer: 'auth.example.com' }, function (err, decodedToken) {
-        assert.that(err, is.null());
-        assert.that(decodedToken.iss, is.equalTo('auth.example.com'));
-        assert.that(decodedToken.sub, is.equalTo('test.domain.com'));
-        assert.that(decodedToken.foo, is.equalTo('bar'));
+        assert.that(err).is.null();
+        assert.that(decodedToken.iss).is.equalTo('auth.example.com');
+        assert.that(decodedToken.sub).is.equalTo('test.domain.com');
+        assert.that(decodedToken.foo).is.equalTo('bar');
         done();
       });
     });
@@ -95,7 +95,7 @@ suite('Limes', function () {
         privateKey: privateKey,
         certificate: certificate
       });
-      assert.that(limes.issueTokenForAnonymous, is.ofType('function'));
+      assert.that(limes.issueTokenForAnonymous).is.ofType('function');
       done();
     });
 
@@ -109,10 +109,10 @@ suite('Limes', function () {
       var token = limes.issueTokenForAnonymous({ foo: 'bar' });
 
       jwt.verify(token, certificate, { issuer: 'auth.example.com' }, function (err, decodedToken) {
-        assert.that(err, is.null());
-        assert.that(decodedToken.iss, is.equalTo('auth.example.com'));
-        assert.that(decodedToken.sub, is.undefined());
-        assert.that(decodedToken.foo, is.equalTo('bar'));
+        assert.that(err).is.null();
+        assert.that(decodedToken.iss).is.equalTo('auth.example.com');
+        assert.that(decodedToken.sub).is.undefined();
+        assert.that(decodedToken.foo).is.equalTo('bar');
         done();
       });
     });
@@ -125,7 +125,7 @@ suite('Limes', function () {
         privateKey: privateKey,
         certificate: certificate
       });
-      assert.that(limes.verifyToken, is.ofType('function'));
+      assert.that(limes.verifyToken).is.ofType('function');
       done();
     });
 
@@ -141,10 +141,10 @@ suite('Limes', function () {
       });
 
       limes.verifyToken(token, function (err, decodedToken) {
-        assert.that(err, is.null());
-        assert.that(decodedToken.iss, is.equalTo('auth.example.com'));
-        assert.that(decodedToken.sub, is.equalTo('adc225b7-65b9-48f4-be4d-c5108aa4d1f4'));
-        assert.that(decodedToken.foo, is.equalTo('bar'));
+        assert.that(err).is.null();
+        assert.that(decodedToken.iss).is.equalTo('auth.example.com');
+        assert.that(decodedToken.sub).is.equalTo('adc225b7-65b9-48f4-be4d-c5108aa4d1f4');
+        assert.that(decodedToken.foo).is.equalTo('bar');
         done();
       });
     });
@@ -157,7 +157,7 @@ suite('Limes', function () {
       });
 
       limes.verifyToken('invalidtoken', function (err) {
-        assert.that(err, is.not.null());
+        assert.that(err).is.not.null();
         done();
       });
     });
@@ -189,7 +189,7 @@ suite('Limes', function () {
           privateKey: privateKey,
           certificate: certificate
         });
-        assert.that(limes.verifyTokenMiddlewareExpress, is.ofType('function'));
+        assert.that(limes.verifyTokenMiddlewareExpress).is.ofType('function');
         done();
       });
 
@@ -202,7 +202,7 @@ suite('Limes', function () {
 
         var middleware = limes.verifyTokenMiddlewareExpress();
 
-        assert.that(middleware, is.ofType('function'));
+        assert.that(middleware).is.ofType('function');
         done();
       });
 
@@ -233,11 +233,11 @@ suite('Limes', function () {
             .get('/')
             .set('accept', 'application/json')
             .end(function (err, res) {
-              assert.that(err, is.null());
-              assert.that(res.statusCode, is.equalTo(200));
-              assert.that(res.body.iss, is.equalTo('auth.example.com'));
-              assert.that(res.body.sub, is.undefined());
-              assert.that(res.body.foo, is.equalTo('anonymous-bar'));
+              assert.that(err).is.null();
+              assert.that(res.statusCode).is.equalTo(200);
+              assert.that(res.body.iss).is.equalTo('auth.example.com');
+              assert.that(res.body.sub).is.undefined();
+              assert.that(res.body.foo).is.equalTo('anonymous-bar');
               done();
             });
         });
@@ -248,8 +248,8 @@ suite('Limes', function () {
             .set('accept', 'application/json')
             .set('authorization', 'Bearer invalidtoken')
             .end(function (err, res) {
-              assert.that(err, is.null());
-              assert.that(res.statusCode, is.equalTo(401));
+              assert.that(err).is.null();
+              assert.that(res.statusCode).is.equalTo(401);
               done();
             });
         });
@@ -264,8 +264,8 @@ suite('Limes', function () {
             .set('accept', 'application/json')
             .set('authorization', 'Bearer ' + expiredToken)
             .end(function (err, res) {
-              assert.that(err, is.null());
-              assert.that(res.statusCode, is.equalTo(401));
+              assert.that(err).is.null();
+              assert.that(res.statusCode).is.equalTo(401);
               done();
             });
         });
@@ -280,8 +280,8 @@ suite('Limes', function () {
             .set('accept', 'application/json')
             .set('authorization', 'Bearer ' + token)
             .end(function (err, res) {
-              assert.that(err, is.null());
-              assert.that(res.statusCode, is.equalTo(401));
+              assert.that(err).is.null();
+              assert.that(res.statusCode).is.equalTo(401);
               done();
             });
         });
@@ -296,11 +296,11 @@ suite('Limes', function () {
             .set('accept', 'application/json')
             .set('authorization', 'Bearer ' + token)
             .end(function (err, res) {
-              assert.that(err, is.null());
-              assert.that(res.statusCode, is.equalTo(200));
-              assert.that(res.body.iss, is.equalTo('auth.example.com'));
-              assert.that(res.body.sub, is.equalTo('test.domain.com'));
-              assert.that(res.body.foo, is.equalTo('authenticated-bar'));
+              assert.that(err).is.null();
+              assert.that(res.statusCode).is.equalTo(200);
+              assert.that(res.body.iss).is.equalTo('auth.example.com');
+              assert.that(res.body.sub).is.equalTo('test.domain.com');
+              assert.that(res.body.foo).is.equalTo('authenticated-bar');
               done();
             });
         });
@@ -314,7 +314,7 @@ suite('Limes', function () {
           privateKey: privateKey,
           certificate: certificate
         });
-        assert.that(limes.verifyTokenMiddlewareSocketIo, is.ofType('function'));
+        assert.that(limes.verifyTokenMiddlewareSocketIo).is.ofType('function');
         done();
       });
 
@@ -327,7 +327,7 @@ suite('Limes', function () {
 
         var middleware = limes.verifyTokenMiddlewareSocketIo();
 
-        assert.that(middleware, is.ofType('function'));
+        assert.that(middleware).is.ofType('function');
         done();
       });
 
@@ -365,9 +365,9 @@ suite('Limes', function () {
           var socket = socketIoClient.connect('http://localhost:3000', { forceNew: true });
           socket.once('connect', function () {
             socket.emit('getUser', function (token) {
-              assert.that(token.iss, is.equalTo('auth.example.com'));
-              assert.that(token.sub, is.undefined());
-              assert.that(token.foo, is.equalTo('anonymous-bar'));
+              assert.that(token.iss).is.equalTo('auth.example.com');
+              assert.that(token.sub).is.undefined();
+              assert.that(token.foo).is.equalTo('anonymous-bar');
               socket.disconnect();
               done();
             });
@@ -378,7 +378,7 @@ suite('Limes', function () {
           var socket = socketIoClient.connect('http://localhost:3000', { forceNew: true });
           socket.once('connect', function () {
             socket.emit('authenticate', 'invalidtoken', function (err) {
-              assert.that(err, is.not.null());
+              assert.that(err).is.not.null();
               socket.disconnect();
               done();
             });
@@ -393,7 +393,7 @@ suite('Limes', function () {
           var socket = socketIoClient.connect('http://localhost:3000', { forceNew: true });
           socket.once('connect', function () {
             socket.emit('authenticate', expiredToken, function (err) {
-              assert.that(err, is.not.null());
+              assert.that(err).is.not.null();
               socket.disconnect();
               done();
             });
@@ -408,7 +408,7 @@ suite('Limes', function () {
           var socket = socketIoClient.connect('http://localhost:3000', { forceNew: true });
           socket.once('connect', function () {
             socket.emit('authenticate', token, function (err) {
-              assert.that(err, is.not.null());
+              assert.that(err).is.not.null();
               socket.disconnect();
               done();
             });
@@ -423,11 +423,11 @@ suite('Limes', function () {
           var socket = socketIoClient.connect('http://localhost:3000', { forceNew: true });
           socket.once('connect', function () {
             socket.emit('authenticate', token, function (err) {
-              assert.that(err, is.null());
-              socket.emit('getUser', function (token) {
-                assert.that(token.iss, is.equalTo('auth.example.com'));
-                assert.that(token.sub, is.equalTo('test.domain.com'));
-                assert.that(token.foo, is.equalTo('authenticated-bar'));
+              assert.that(err).is.null();
+              socket.emit('getUser', function (receivedToken) {
+                assert.that(receivedToken.iss).is.equalTo('auth.example.com');
+                assert.that(receivedToken.sub).is.equalTo('test.domain.com');
+                assert.that(receivedToken.foo).is.equalTo('authenticated-bar');
                 socket.disconnect();
                 done();
               });

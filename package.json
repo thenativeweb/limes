@@ -14,18 +14,18 @@
   ],
   "main": "lib/Limes.js",
   "dependencies": {
-    "express-jwt": "0.4.0",
-    "jsonwebtoken": "1.1.2",
-    "middleware-flow": "0.6.0"
+    "express-jwt": "1.0.0",
+    "jsonwebtoken": "3.2.2",
+    "middleware-flow": "0.6.1"
   },
   "devDependencies": {
-    "express": "4.9.6",
+    "assertthat": "0.4.2",
+    "express": "4.11.2",
     "grunt": "0.4.5",
-    "node-assertthat": "0.2.1",
-    "socket.io": "1.1.0",
-    "socket.io-client": "1.1.0",
-    "supertest": "0.14.0",
-    "tourism": "0.7.3"
+    "socket.io": "1.3.3",
+    "socket.io-client": "1.3.3",
+    "supertest": "0.15.0",
+    "tourism": "0.13.2"
   },
   "repository": {
     "type": "git",
