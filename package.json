@@ -31,5 +31,11 @@
     "type": "git",
     "url": "git://github.com/thenativeweb/limes.git"
   },
+  "keywords": [
+    "authentication",
+    "jwt",
+    "security",
+    "token"
+  ],
   "license": "MIT"
 }
