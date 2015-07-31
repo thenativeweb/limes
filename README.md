@@ -72,6 +72,10 @@ The Express middleware expects the token to be inside an HTTP header called `aut
 
     authorization: Bearer <token>
 
+Alternatively, you may transfer the token using the query string parameter `token`:
+
+    GET /foo/bar?token=<token>
+
 The Socket.io middleware expects you to emit an `authenticate` event and provide the token as well as a callback.
 
 ```javascript
@@ -89,7 +93,7 @@ This module can be built using [Grunt](http://gruntjs.com/). Besides running the
 ## License
 
 The MIT License (MIT)
-Copyright (c) 2014 the native web.
+Copyright (c) 2014-2015 the native web.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

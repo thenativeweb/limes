@@ -16,7 +16,6 @@ var Limes = require('../lib/Limes');
 var certificate = fs.readFileSync(path.join(__dirname, 'keys', 'certificate.pem')),
     privateKey = fs.readFileSync(path.join(__dirname, 'keys', 'privateKey.pem'));
 
-/* eslint-disable no-new */
 suite('Limes', function () {
   test('is a function.', function (done) {
     assert.that(Limes).is.ofType('function');
@@ -25,23 +24,29 @@ suite('Limes', function () {
 
   test('throws an exception if options are missing.', function (done) {
     assert.that(function () {
+      /* eslint-disable no-new */
       new Limes();
+      /* eslint-enable no-new */
     }).is.throwing('Options are missing.');
     done();
   });
 
   test('throws an exception if identity provider name is missing.', function (done) {
     assert.that(function () {
+      /* eslint-disable no-new */
       new Limes({});
+      /* eslint-enable no-new */
     }).is.throwing('Identity provider name is missing.');
     done();
   });
 
   test('throws an exception if private key and certificate are both missing.', function (done) {
     assert.that(function () {
+      /* eslint-disable no-new */
       new Limes({
         identityProviderName: 'auth.example.com'
       });
+      /* eslint-enable no-new */
     }).is.throwing('Specify private key and / or certificate.');
     done();
   });
@@ -309,6 +314,24 @@ suite('Limes', function () {
               done();
             });
         });
+
+        test('returns a decoded token for authenticated requests using query string.', function (done) {
+          var token = limes.issueTokenFor('test.domain.com', {
+            foo: 'authenticated-bar'
+          });
+
+          request(app).
+            get('/?token=' + token).
+            set('accept', 'application/json').
+            end(function (err, res) {
+              assert.that(err).is.null();
+              assert.that(res.statusCode).is.equalTo(200);
+              assert.that(res.body.iss).is.equalTo('auth.example.com');
+              assert.that(res.body.sub).is.equalTo('test.domain.com');
+              assert.that(res.body.foo).is.equalTo('authenticated-bar');
+              done();
+            });
+        });
       });
     });
 
@@ -449,4 +472,3 @@ suite('Limes', function () {
     });
   });
 });
-/* eslint-enable no-new */
