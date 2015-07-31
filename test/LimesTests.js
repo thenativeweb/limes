@@ -16,7 +16,7 @@ var Limes = require('../lib/Limes');
 var certificate = fs.readFileSync(path.join(__dirname, 'keys', 'certificate.pem')),
     privateKey = fs.readFileSync(path.join(__dirname, 'keys', 'privateKey.pem'));
 
-/*eslint-disable no-new*/
+/* eslint-disable no-new */
 suite('Limes', function () {
   test('is a function.', function (done) {
     assert.that(Limes).is.ofType('function');
@@ -53,6 +53,7 @@ suite('Limes', function () {
         privateKey: privateKey,
         certificate: certificate
       });
+
       assert.that(limes.issueTokenFor).is.ofType('function');
       done();
     });
@@ -63,6 +64,7 @@ suite('Limes', function () {
         privateKey: privateKey,
         certificate: certificate
       });
+
       assert.that(function () {
         limes.issueTokenFor();
       }).is.throwing('Subject is missing.');
@@ -95,6 +97,7 @@ suite('Limes', function () {
         privateKey: privateKey,
         certificate: certificate
       });
+
       assert.that(limes.issueTokenForAnonymous).is.ofType('function');
       done();
     });
@@ -125,6 +128,7 @@ suite('Limes', function () {
         privateKey: privateKey,
         certificate: certificate
       });
+
       assert.that(limes.verifyToken).is.ofType('function');
       done();
     });
@@ -189,6 +193,7 @@ suite('Limes', function () {
           privateKey: privateKey,
           certificate: certificate
         });
+
         assert.that(limes.verifyTokenMiddlewareExpress).is.ofType('function');
         done();
       });
@@ -229,10 +234,10 @@ suite('Limes', function () {
         });
 
         test('returns an anonymous token for non-authenticated requests.', function (done) {
-          request(app)
-            .get('/')
-            .set('accept', 'application/json')
-            .end(function (err, res) {
+          request(app).
+            get('/').
+            set('accept', 'application/json').
+            end(function (err, res) {
               assert.that(err).is.null();
               assert.that(res.statusCode).is.equalTo(200);
               assert.that(res.body.iss).is.equalTo('auth.example.com');
@@ -243,12 +248,12 @@ suite('Limes', function () {
         });
 
         test('returns 401 for invalid authenticated requests.', function (done) {
-          request(app)
-            .get('/')
-            .set('accept', 'application/json')
-            .set('authorization', 'Bearer invalidtoken')
-            .end(function (err, res) {
-              assert.that(err).is.null();
+          request(app).
+            get('/').
+            set('accept', 'application/json').
+            set('authorization', 'Bearer invalidtoken').
+            end(function (err, res) {
+              assert.that(err).is.not.null();
               assert.that(res.statusCode).is.equalTo(401);
               done();
             });
@@ -259,12 +264,12 @@ suite('Limes', function () {
             foo: 'authenticated-bar'
           });
 
-          request(app)
-            .get('/')
-            .set('accept', 'application/json')
-            .set('authorization', 'Bearer ' + expiredToken)
-            .end(function (err, res) {
-              assert.that(err).is.null();
+          request(app).
+            get('/').
+            set('accept', 'application/json').
+            set('authorization', 'Bearer ' + expiredToken).
+            end(function (err, res) {
+              assert.that(err).is.not.null();
               assert.that(res.statusCode).is.equalTo(401);
               done();
             });
@@ -275,12 +280,12 @@ suite('Limes', function () {
             foo: 'authenticated-bar'
           });
 
-          request(app)
-            .get('/')
-            .set('accept', 'application/json')
-            .set('authorization', 'Bearer ' + token)
-            .end(function (err, res) {
-              assert.that(err).is.null();
+          request(app).
+            get('/').
+            set('accept', 'application/json').
+            set('authorization', 'Bearer ' + token).
+            end(function (err, res) {
+              assert.that(err).is.not.null();
               assert.that(res.statusCode).is.equalTo(401);
               done();
             });
@@ -291,11 +296,11 @@ suite('Limes', function () {
             foo: 'authenticated-bar'
           });
 
-          request(app)
-            .get('/')
-            .set('accept', 'application/json')
-            .set('authorization', 'Bearer ' + token)
-            .end(function (err, res) {
+          request(app).
+            get('/').
+            set('accept', 'application/json').
+            set('authorization', 'Bearer ' + token).
+            end(function (err, res) {
               assert.that(err).is.null();
               assert.that(res.statusCode).is.equalTo(200);
               assert.that(res.body.iss).is.equalTo('auth.example.com');
@@ -314,6 +319,7 @@ suite('Limes', function () {
           privateKey: privateKey,
           certificate: certificate
         });
+
         assert.that(limes.verifyTokenMiddlewareSocketIo).is.ofType('function');
         done();
       });
@@ -363,6 +369,7 @@ suite('Limes', function () {
 
         test('returns an anonymous token for non-authenticated requests.', function (done) {
           var socket = socketIoClient.connect('http://localhost:3000', { forceNew: true });
+
           socket.once('connect', function () {
             socket.emit('getUser', function (token) {
               assert.that(token.iss).is.equalTo('auth.example.com');
@@ -376,6 +383,7 @@ suite('Limes', function () {
 
         test('returns an error for invalid authenticated requests.', function (done) {
           var socket = socketIoClient.connect('http://localhost:3000', { forceNew: true });
+
           socket.once('connect', function () {
             socket.emit('authenticate', 'invalidtoken', function (err) {
               assert.that(err).is.not.null();
@@ -391,6 +399,7 @@ suite('Limes', function () {
           });
 
           var socket = socketIoClient.connect('http://localhost:3000', { forceNew: true });
+
           socket.once('connect', function () {
             socket.emit('authenticate', expiredToken, function (err) {
               assert.that(err).is.not.null();
@@ -406,6 +415,7 @@ suite('Limes', function () {
           });
 
           var socket = socketIoClient.connect('http://localhost:3000', { forceNew: true });
+
           socket.once('connect', function () {
             socket.emit('authenticate', token, function (err) {
               assert.that(err).is.not.null();
@@ -421,6 +431,7 @@ suite('Limes', function () {
           });
 
           var socket = socketIoClient.connect('http://localhost:3000', { forceNew: true });
+
           socket.once('connect', function () {
             socket.emit('authenticate', token, function (err) {
               assert.that(err).is.null();
@@ -438,4 +449,4 @@ suite('Limes', function () {
     });
   });
 });
-/*eslint-enable no-new*/
+/* eslint-enable no-new */
