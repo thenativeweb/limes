@@ -72,7 +72,7 @@ The Express middleware expects the token to be inside an HTTP header called `aut
 
     authorization: Bearer <token>
 
-Alternatively, you may transfer the token using the query string parameter `token`:
+Alternatively, you may transfer the token using the query string parameter `token`.
 
     GET /foo/bar?token=<token>
 
