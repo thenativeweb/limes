@@ -170,6 +170,19 @@ suite('Limes', function () {
         done();
       });
     });
+
+    test('returns an error if the token contains invalid characters.', function (done) {
+      var limes = new Limes({
+        identityProviderName: 'auth.example.com',
+        privateKey: privateKey,
+        certificate: certificate
+      });
+
+      limes.verifyToken('invalid token', function (err) {
+        assert.that(err).is.not.null();
+        done();
+      });
+    });
   });
 
   suite('middleware integration', function () {
@@ -258,7 +271,19 @@ suite('Limes', function () {
             set('accept', 'application/json').
             set('authorization', 'Bearer invalidtoken').
             end(function (err, res) {
-              assert.that(err).is.not.null();
+              assert.that(err).is.null();
+              assert.that(res.statusCode).is.equalTo(401);
+              done();
+            });
+        });
+
+        test('returns 401 for tokens with invalid characters.', function (done) {
+          request(app).
+            get('/').
+            set('accept', 'application/json').
+            set('authorization', 'Bearer invalid token').
+            end(function (err, res) {
+              assert.that(err).is.null();
               assert.that(res.statusCode).is.equalTo(401);
               done();
             });
@@ -274,7 +299,7 @@ suite('Limes', function () {
             set('accept', 'application/json').
             set('authorization', 'Bearer ' + expiredToken).
             end(function (err, res) {
-              assert.that(err).is.not.null();
+              assert.that(err).is.null();
               assert.that(res.statusCode).is.equalTo(401);
               done();
             });
@@ -290,7 +315,7 @@ suite('Limes', function () {
             set('accept', 'application/json').
             set('authorization', 'Bearer ' + token).
             end(function (err, res) {
-              assert.that(err).is.not.null();
+              assert.that(err).is.null();
               assert.that(res.statusCode).is.equalTo(401);
               done();
             });
