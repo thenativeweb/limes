@@ -15,7 +15,7 @@
   "main": "lib/Limes.js",
   "dependencies": {
     "express-jwt": "3.1.0",
-    "jsonwebtoken": "5.0.5",
+    "jsonwebtoken": "5.4.1",
     "middleware-flow": "0.8.0"
   },
   "devDependencies": {

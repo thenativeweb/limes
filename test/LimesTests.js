@@ -119,7 +119,7 @@ suite('Limes', function () {
       jwt.verify(token, certificate, { issuer: 'auth.example.com' }, function (err, decodedToken) {
         assert.that(err).is.null();
         assert.that(decodedToken.iss).is.equalTo('auth.example.com');
-        assert.that(decodedToken.sub).is.undefined();
+        assert.that(decodedToken.sub).is.equalTo('anonymous');
         assert.that(decodedToken.foo).is.equalTo('bar');
         done();
       });
@@ -259,7 +259,7 @@ suite('Limes', function () {
               assert.that(err).is.null();
               assert.that(res.statusCode).is.equalTo(200);
               assert.that(res.body.iss).is.equalTo('auth.example.com');
-              assert.that(res.body.sub).is.undefined();
+              assert.that(res.body.sub).is.equalTo('anonymous');
               assert.that(res.body.foo).is.equalTo('anonymous-bar');
               done();
             });
@@ -421,7 +421,7 @@ suite('Limes', function () {
           socket.once('connect', function () {
             socket.emit('getUser', function (token) {
               assert.that(token.iss).is.equalTo('auth.example.com');
-              assert.that(token.sub).is.undefined();
+              assert.that(token.sub).is.equalTo('anonymous');
               assert.that(token.foo).is.equalTo('anonymous-bar');
               socket.disconnect();
               done();
