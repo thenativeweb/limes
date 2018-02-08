@@ -4,23 +4,25 @@ limes authenticates users.
 
 ## Installation
 
-    $ npm install limes
+```shell
+$ npm install limes
+```
 
 ## Quick start
 
-First you need to add a reference to limes in your application.
+First you need to add a reference to limes in your application:
 
 ```javascript
-var Limes = require('limes');
+const Limes = require('limes');
 ```
 
-Then you can call the `Limes` constructor function to create a new limes instance. You need to specify a parameter object with the `identityProviderName` and either a `privateKey` or a `certificate`, each in `.pem` format. Optionally, you may also provide both.
+Then you can call the `Limes` constructor function to create a new limes instance. You need to specify a parameter object with the `identityProviderName` and either a `privateKey` or a `certificate`, each in `.pem` format. Optionally, you may also provide both:
 
 ```javascript
-var limes = new Limes({
+const limes = new Limes({
   identityProviderName: 'auth.example.com',
-  privateKey: fs.readFileSync(path.join(__dirname, 'privateKey.pem')),
-  certificate: fs.readFileSync(path.join(__dirname, 'certificate.pem'))
+  privateKey: await readFile(path.join(__dirname, 'privateKey.pem')),
+  certificate: await readFile(path.join(__dirname, 'certificate.pem'))
 });
 ```
 
@@ -28,27 +30,25 @@ Please note that you have to specify the private key if you want to issue tokens
 
 ### Issuing tokens
 
-To issue a token call the `issueTokenFor` function and provide the subject you want to issue the token for as well as the desired payload.
+To issue a token call the `issueTokenFor` function and provide the subject you want to issue the token for as well as the desired payload:
 
 ```javascript
-var token = limes.issueTokenFor('Jane Doe', {
+const token = limes.issueTokenFor('Jane Doe', {
   foo: 'bar'
 });
 ```
 
 ### Verifying tokens
 
-To verify a token call the `verifyToken` function and provide the token and a callback. As a result, it returns the decoded token.
+To verify a token call the `verifyToken` function and provide the token. As a result, it returns the decoded token:
 
 ```javascript
-limes.verifyToken(token, function (err, decodedToken) {
-  // ...
-});
+const decodedToken = await limes.verifyToken(token);
 ```
 
 ### Using middleware
 
-To verify tokens there are also middlewares for Express and Socket.io. To use them call the `verifyTokenMiddlewareExpress` or `verifyTokenMiddlewareSocketIo` functions and optionally specify the payload for non-authenticated users.
+To verify tokens there is also a middleware for Express. To use it call the `verifyTokenMiddlewareExpress` function and optionally specify the payload for non-authenticated users:
 
 ```javascript
 app.use(limes.verifyTokenMiddlewareExpress({
@@ -56,44 +56,32 @@ app.use(limes.verifyTokenMiddlewareExpress({
     foo: 'bar'
   }
 }));
-
-io.use(limes.verifyTokenMiddlewareSocketIo({
-  payloadWhenAnonymous: {
-    foo: 'bar'
-  }
-}));
 ```
 
-If a request does not provide a token, an anonymous token is issued. If a request does have an invalid token, an expired one, or one with a wrong issuer, the middleware returns a `401` respectively an error.
+If a request does not provide a token, an anonymous token is issued. If a request does have an invalid token, an expired one, or one with a wrong issuer, the middleware returns a `401` respectively an error. Otherwise, it attaches the decoded token to `req.user`.
 
-Otherwise, it attaches the decoded token to `req.user` respectively `socket.user`.
+The middleware expects the token to be inside an HTTP header called `authorization` and prefixed with the term `Bearer`:
 
-The Express middleware expects the token to be inside an HTTP header called `authorization` and prefixed with the term `Bearer`.
+```
+authorization: Bearer <token>
+```
 
-    authorization: Bearer <token>
+Alternatively, you may transfer the token using the query string parameter `token`:
 
-Alternatively, you may transfer the token using the query string parameter `token`.
-
-    GET /foo/bar?token=<token>
-
-The Socket.io middleware expects you to emit an `authenticate` event and provide the token as well as a callback.
-
-```javascript
-socket.emit('authenticate', token, function (err) {
-  // ...
-});
+```
+GET /foo/bar?token=<token>
 ```
 
 ## Running the build
 
-This module can be built using [Grunt](http://gruntjs.com/). Besides running the tests, this also analyses the code. To run Grunt, go to the folder where you have installed limes and run `grunt`. You need to have [grunt-cli](https://github.com/gruntjs/grunt-cli) installed.
-
-    $ grunt
+```shell
+$ bot
+```
 
 ## License
 
 The MIT License (MIT)
-Copyright (c) 2014-2015 the native web.
+Copyright (c) 2014-2018 the native web.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
