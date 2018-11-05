@@ -8,11 +8,11 @@ const assert = require('assertthat'),
       jwt = require('jsonwebtoken'),
       request = require('supertest');
 
-const Limes = require('../../lib/Limes');
+const Limes = require('../../src/Limes');
 
 /* eslint-disable no-sync */
-const certificate = fs.readFileSync(path.join(__dirname, '..', 'keys', 'certificate.pem')),
-      privateKey = fs.readFileSync(path.join(__dirname, '..', 'keys', 'privateKey.pem'));
+const certificate = fs.readFileSync(path.join(__dirname, '..', 'shared', 'keys', 'certificate.pem')),
+      privateKey = fs.readFileSync(path.join(__dirname, '..', 'shared', 'keys', 'privateKey.pem'));
 /* eslint-enable no-sync */
 
 suite('Limes', () => {
