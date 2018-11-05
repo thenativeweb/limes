@@ -75,7 +75,7 @@ GET /foo/bar?token=<token>
 ## Running the build
 
 ```shell
-$ bot
+$ npx roboter
 ```
 
 ## License
