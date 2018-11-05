@@ -1,41 +1,33 @@
 'use strict';
 
-var _regenerator = require('babel-runtime/regenerator');
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-var _regenerator2 = _interopRequireDefault(_regenerator);
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
-var _promise = require('babel-runtime/core-js/promise');
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
-var _promise2 = _interopRequireDefault(_promise);
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
-var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
-
-var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
-
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
 var expressJwt = require('express-jwt'),
     flow = require('middleware-flow'),
     jwt = require('jsonwebtoken');
 
-var Limes = function () {
+var Limes =
+/*#__PURE__*/
+function () {
   function Limes(options) {
-    (0, _classCallCheck3.default)(this, Limes);
+    (0, _classCallCheck2.default)(this, Limes);
 
     if (!options) {
       throw new Error('Options are missing.');
     }
+
     if (!options.identityProviderName) {
       throw new Error('Identity provider name is missing.');
     }
+
     if (!options.privateKey && !options.certificate) {
       throw new Error('Specify private key and / or certificate.');
     }
@@ -44,17 +36,15 @@ var Limes = function () {
         privateKey = options.privateKey,
         certificate = options.certificate,
         _options$expiresInMin = options.expiresInMinutes,
-        expiresInMinutes = _options$expiresInMin === undefined ? 24 * 60 : _options$expiresInMin;
-
-
+        expiresInMinutes = _options$expiresInMin === void 0 ? 24 * 60 : _options$expiresInMin;
     this.identityProviderName = identityProviderName;
     this.privateKey = privateKey;
     this.certificate = certificate;
     this.expiresInMinutes = expiresInMinutes;
   }
 
-  (0, _createClass3.default)(Limes, [{
-    key: 'issueTokenFor',
+  (0, _createClass2.default)(Limes, [{
+    key: "issueTokenFor",
     value: function issueTokenFor(subject) {
       var payload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
@@ -70,39 +60,36 @@ var Limes = function () {
       });
     }
   }, {
-    key: 'issueTokenForAnonymous',
+    key: "issueTokenForAnonymous",
     value: function issueTokenForAnonymous(payload) {
       return this.issueTokenFor('anonymous', payload);
     }
   }, {
-    key: 'issueDecodedTokenForAnonymous',
+    key: "issueDecodedTokenForAnonymous",
     value: function issueDecodedTokenForAnonymous(options) {
       var payloadWhenAnonymous = options.payloadWhenAnonymous;
-
-
       var issuedAt = Math.floor(Date.now() / 1000);
       var expiresAt = issuedAt + this.expiresInMinutes * 60;
-
       var token = payloadWhenAnonymous;
-
       token.iat = issuedAt;
       token.exp = expiresAt;
       token.iss = this.identityProviderName;
       token.sub = 'anonymous';
-
       return token;
     }
   }, {
-    key: 'verifyToken',
+    key: "verifyToken",
     value: function () {
-      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(token) {
+      var _verifyToken = (0, _asyncToGenerator2.default)(
+      /*#__PURE__*/
+      _regenerator.default.mark(function _callee(token) {
         var _this = this;
 
-        return _regenerator2.default.wrap(function _callee$(_context) {
+        return _regenerator.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                return _context.abrupt('return', new _promise2.default(function (resolve, reject) {
+                return _context.abrupt("return", new Promise(function (resolve, reject) {
                   jwt.verify(token, _this.certificate, {
                     issuer: _this.identityProviderName
                   }, function (err, decodedToken) {
@@ -115,29 +102,25 @@ var Limes = function () {
                 }));
 
               case 1:
-              case 'end':
+              case "end":
                 return _context.stop();
             }
           }
         }, _callee, this);
       }));
 
-      function verifyToken(_x2) {
-        return _ref.apply(this, arguments);
-      }
-
-      return verifyToken;
+      return function verifyToken(_x) {
+        return _verifyToken.apply(this, arguments);
+      };
     }()
   }, {
-    key: 'verifyTokenMiddlewareExpress',
+    key: "verifyTokenMiddlewareExpress",
     value: function verifyTokenMiddlewareExpress() {
       var _this2 = this;
 
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var _options$payloadWhenA = options.payloadWhenAnonymous,
-          payloadWhenAnonymous = _options$payloadWhenA === undefined ? {} : _options$payloadWhenA;
-
-
+          payloadWhenAnonymous = _options$payloadWhenA === void 0 ? {} : _options$payloadWhenA;
       return flow.try(expressJwt({
         secret: this.certificate,
         issuer: this.identityProviderName,
@@ -155,7 +138,9 @@ var Limes = function () {
           return res.status(401).end();
         }
 
-        req.user = _this2.issueDecodedTokenForAnonymous({ payloadWhenAnonymous: payloadWhenAnonymous });
+        req.user = _this2.issueDecodedTokenForAnonymous({
+          payloadWhenAnonymous: payloadWhenAnonymous
+        });
         next();
       });
     }
