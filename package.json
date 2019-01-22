@@ -14,16 +14,16 @@
   ],
   "main": "dist/Limes.js",
   "dependencies": {
-    "@babel/runtime": "7.1.2",
+    "@babel/runtime": "7.3.1",
     "express-jwt": "5.3.1",
-    "jsonwebtoken": "8.3.0",
+    "jsonwebtoken": "8.4.0",
     "middleware-flow": "0.8.0"
   },
   "devDependencies": {
-    "assertthat": "1.0.0",
+    "assertthat": "2.0.1",
     "express": "4.16.4",
-    "roboter": "2.0.0",
-    "supertest": "3.3.0"
+    "roboter": "3.0.4",
+    "supertest": "3.4.1"
   },
   "repository": {
     "type": "git",
