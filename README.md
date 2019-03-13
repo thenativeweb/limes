@@ -26,7 +26,7 @@ const identityProvider = new Limes.IdentityProvider({
 });
 ```
 
-*Please note that you have to specify the private key if you want to issue tokens and the certificate if you want to verify them.*
+_Please note that you have to specify the private key if you want to issue tokens and the certificate if you want to verify them._
 
 Then you can call the `Limes` constructor function to create a new limes instance. Hand over an array of one or more of the previously created identity providers:
 
@@ -50,7 +50,7 @@ const token = limes.issueToken({
 });
 ```
 
-*Please note that the issuer must match one of the registered identity providers. Otherwise, `issueToken` will throw an error.*
+_Please note that the issuer must match one of the registered identity providers. Otherwise, `issueToken` will throw an error._
 
 #### Issuing untrusted tokens for testing
 
@@ -63,7 +63,7 @@ const decodedToken = Limes.issueUntrustedTokenAsJson({
 });
 ```
 
-*Please note that this is highly insecure, and should never be used for production code!*
+_Please note that this is highly insecure, and should never be used for production code!_
 
 ### Verifying tokens
 
@@ -85,19 +85,15 @@ app.use(limes.verifyTokenMiddleware({
 }));
 ```
 
-*Please note that the issuer for anonymous tokens is made-up, and does not provide any security. It's just a string that is used without further validation.*
+_Please note that the issuer for anonymous tokens is made-up, and does not provide any security. It's just a string that is used without further validation._
 
 The middleware expects the token to be inside the `authorization` HTTP header, prefixed with the term `Bearer`:
 
-```
-authorization: Bearer <token>
-```
+    authorization: Bearer <token>
 
 Alternatively, you may transfer the token using the query string parameter `token`:
 
-```
-GET /foo/bar?token=<token>
-```
+    GET /foo/bar?token=<token>
 
 Either way, the verified and decoded token will be attached to the `req.user` property:
 
@@ -115,7 +111,7 @@ app.get('/', (req, res) => {
 
 If a request does not provide a token, a token for an anonymous user will be issued. This issue uses `anonymous` for the `sub` property, and the aforementioned issuer for anonymous tokens.
 
-*Please make sure that your application code handles anonymous users in an intended way! The middleware does not block anonymous users, it just identifies and marks them!*
+_Please make sure that your application code handles anonymous users in an intended way! The middleware does not block anonymous users, it just identifies and marks them!_
 
 If a request does have an invalid token, an expired one, or one from an unknown issuer, the middleware returns the status code `401`.
 
