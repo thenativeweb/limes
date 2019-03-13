@@ -1,107 +1,170 @@
 'use strict';
 
-const expressJwt = require('express-jwt'),
-      flow = require('middleware-flow'),
-      jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+
+const IdentityProvider = require('./IdentityProvider');
 
 class Limes {
-  constructor (options) {
-    if (!options) {
-      throw new Error('Options are missing.');
+  constructor ({ identityProviders }) {
+    if (!identityProviders) {
+      throw new Error('Identity providers are missing.');
     }
-    if (!options.identityProviderName) {
-      throw new Error('Identity provider name is missing.');
-    }
-    if (!options.privateKey && !options.certificate) {
-      throw new Error('Specify private key and / or certificate.');
+    if (identityProviders.length === 0) {
+      throw new Error('Identity providers are missing.');
     }
 
-    const {
-      identityProviderName,
-      privateKey,
-      certificate,
-      expiresInMinutes = 24 * 60
-    } = options;
-
-    this.identityProviderName = identityProviderName;
-    this.privateKey = privateKey;
-    this.certificate = certificate;
-    this.expiresInMinutes = expiresInMinutes;
+    this.identityProviders = identityProviders;
   }
 
-  issueTokenFor (subject, payload = {}) {
+  getIdentityProviderByIssuer ({ issuer }) {
+    if (!issuer) {
+      throw new Error('Issuer is missing.');
+    }
+
+    const requestedIdentityProvider = this.identityProviders.find(
+      identityProvider => identityProvider.issuer === issuer
+    );
+
+    if (!requestedIdentityProvider) {
+      throw new Error(`Issuer '${issuer}' not found.`);
+    }
+
+    return requestedIdentityProvider;
+  }
+
+  issueToken ({
+    issuer,
+    subject,
+    payload = {}
+  }) {
+    if (!issuer) {
+      throw new Error('Issuer is missing.');
+    }
     if (!subject) {
       throw new Error('Subject is missing.');
     }
 
-    return jwt.sign(payload, this.privateKey, {
+    const identityProvider = this.getIdentityProviderByIssuer({ issuer });
+
+    const token = jwt.sign(payload, identityProvider.privateKey, {
       algorithm: 'RS256',
-      expiresIn: this.expiresInMinutes * 60,
       subject,
-      issuer: this.identityProviderName
+      issuer: identityProvider.issuer,
+      expiresIn: identityProvider.expiresInMinutes * 60
     });
-  }
-
-  issueTokenForAnonymous (payload) {
-    return this.issueTokenFor('anonymous', payload);
-  }
-
-  issueDecodedTokenForAnonymous (options) {
-    const { payloadWhenAnonymous } = options;
-
-    const issuedAt = Math.floor(Date.now() / 1000);
-    const expiresAt = issuedAt + (this.expiresInMinutes * 60);
-
-    const token = payloadWhenAnonymous;
-
-    token.iat = issuedAt;
-    token.exp = expiresAt;
-    token.iss = this.identityProviderName;
-    token.sub = 'anonymous';
 
     return token;
   }
 
-  async verifyToken (token) {
-    return new Promise((resolve, reject) => {
-      jwt.verify(token, this.certificate, {
-        issuer: this.identityProviderName
-      }, (err, decodedToken) => {
-        if (err) {
-          return reject(err);
-        }
+  static issueUntrustedTokenAsJson ({
+    issuer,
+    subject,
+    payload = {}
+  }) {
+    if (!issuer) {
+      throw new Error('Issuer is missing.');
+    }
+    if (!subject) {
+      throw new Error('Subject is missing.');
+    }
 
-        resolve(decodedToken);
-      });
+    const expiresInMinutes = 60;
+
+    const encodedToken = jwt.sign(payload, null, {
+      algorithm: 'none',
+      subject,
+      issuer,
+      expiresIn: expiresInMinutes * 60
     });
+
+    const token = jwt.decode(encodedToken);
+
+    return token;
   }
 
-  verifyTokenMiddlewareExpress (options = {}) {
-    const { payloadWhenAnonymous = {}} = options;
+  async verifyToken ({ token }) {
+    if (!token) {
+      throw new Error('Token is missing.');
+    }
 
-    return flow.
-      try(expressJwt({
-        secret: this.certificate,
-        issuer: this.identityProviderName,
-        getToken (req) {
-          if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-            return req.headers.authorization.split(' ')[1];
-          } else if (req.query && req.query.token) {
-            return req.query.token;
+    let untrustedDecodedToken;
+
+    try {
+      untrustedDecodedToken = jwt.decode(token);
+    } catch (ex) {
+      throw new Error('Failed to verify token.');
+    }
+
+    if (!untrustedDecodedToken) {
+      throw new Error('Failed to verify token.');
+    }
+
+    const identityProvider = this.getIdentityProviderByIssuer({
+      issuer: untrustedDecodedToken.iss
+    });
+
+    const decodedToken = await new Promise((resolve, reject) => {
+      try {
+        jwt.verify(token, identityProvider.certificate, {
+          algorithms: [ 'RS256' ],
+          issuer: identityProvider.issuer
+        }, (err, verifiedToken) => {
+          if (err) {
+            return reject(new Error('Failed to verify token.'));
           }
 
-          return null;
+          resolve(verifiedToken);
+        });
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+
+    return decodedToken;
+  }
+
+  verifyTokenMiddleware ({ issuerForAnonymousTokens }) {
+    if (!issuerForAnonymousTokens) {
+      throw new Error('Issuer for anonymous tokens is missing.');
+    }
+
+    return async (req, res, next) => {
+      let token;
+
+      const authorizationHeader = req.headers.authorization,
+            authorizationQuery = req.query.token;
+
+      if (authorizationHeader) {
+        const [ authorizationType, authorizationValue ] = authorizationHeader.split(' ');
+
+        if (authorizationType === 'Bearer') {
+          token = authorizationValue;
         }
-      })).
-      catch((err, req, res, next) => {
-        if (err.code === 'invalid_token') {
+      } else if (authorizationQuery) {
+        token = authorizationQuery;
+      }
+
+      let decodedToken;
+
+      if (token) {
+        try {
+          decodedToken = await this.verifyToken({ token });
+        } catch (ex) {
           return res.status(401).end();
         }
+      } else {
+        decodedToken = Limes.issueUntrustedTokenAsJson({
+          issuer: issuerForAnonymousTokens,
+          subject: 'anonymous'
+        });
+      }
 
-        req.user = this.issueDecodedTokenForAnonymous({ payloadWhenAnonymous });
-        next();
-      });
+      req.user = decodedToken;
+      next();
+    };
   }
 }
+
+Limes.IdentityProvider = IdentityProvider;
 
 module.exports = Limes;
