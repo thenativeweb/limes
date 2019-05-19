@@ -5,7 +5,7 @@ const fs = require('fs'),
 
 const assert = require('assertthat');
 
-const IdentityProvider = require('../../src/IdentityProvider');
+const IdentityProvider = require('../../lib/IdentityProvider');
 
 /* eslint-disable no-sync */
 const certificate = fs.readFileSync(path.join(__dirname, '..', 'shared', 'keys', 'auth.thenativeweb.io', 'certificate.pem')),

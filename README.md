@@ -26,7 +26,7 @@ const identityProvider = new Limes.IdentityProvider({
 });
 ```
 
-_Please note that you have to specify the private key if you want to issue tokens and the certificate if you want to verify them._
+*Please note that you have to specify the private key if you want to issue tokens and the certificate if you want to verify them.*
 
 Then you can call the `Limes` constructor function to create a new limes instance. Hand over an array of one or more of the previously created identity providers:
 
@@ -50,20 +50,20 @@ const token = limes.issueToken({
 });
 ```
 
-_Please note that the issuer must match one of the registered identity providers. Otherwise, `issueToken` will throw an error._
+*Please note that the issuer must match one of the registered identity providers. Otherwise, `issueToken` will throw an error.*
 
 #### Issuing untrusted tokens for testing
 
-From time to time, e.g. for testing, you may want to get a JSON object that looks like a decoded token, but avoid the effort to create a signed token first. For this, use the static `issueUntrustedTokenAsJson` function and hand over the desired `issuer`, the `subject`, and an optional `payload`:
+From time to time, e.g. for testing, you may want to get a JSON object that looks like a decoded token, but avoid the effort to create a signed token first. For this, use the static `issueUntrustedToken` function and hand over the desired `issuer`, the `subject`, and an optional `payload`:
 
 ```javascript
-const decodedToken = Limes.issueUntrustedTokenAsJson({
+const { token, decodedToken } = Limes.issueUntrustedToken({
   issuer: 'https://untrusted.thenativeweb.io',
   subject: 'jane.doe'
 });
 ```
 
-_Please note that this is highly insecure, and should never be used for production code!_
+*Please note that this is highly insecure, and should never be used for production code!*
 
 ### Verifying tokens
 
@@ -85,17 +85,21 @@ app.use(limes.verifyTokenMiddleware({
 }));
 ```
 
-_Please note that the issuer for anonymous tokens is made-up, and does not provide any security. It's just a string that is used without further validation._
+*Please note that the issuer for anonymous tokens is made-up, and does not provide any security. It's just a string that is used without further validation.*
 
 The middleware expects the token to be inside the `authorization` HTTP header, prefixed with the term `Bearer`:
 
-    authorization: Bearer <token>
+```
+authorization: Bearer <token>
+```
 
 Alternatively, you may transfer the token using the query string parameter `token`:
 
-    GET /foo/bar?token=<token>
+```
+GET /foo/bar?token=<token>
+```
 
-Either way, the verified and decoded token will be attached to the `req.user` property:
+Either way, the verified and decoded token will be attached to the `req.user` property, while the original token will be attached to the `req.token` property:
 
 ```javascript
 const app = express();
@@ -105,13 +109,13 @@ app.use(limes.verifyTokenMiddleware({
 }));
 
 app.get('/', (req, res) => {
-  res.json(req.user);
+  res.json({ user: req.user, token: req.token });
 });
 ```
 
 If a request does not provide a token, a token for an anonymous user will be issued. This issue uses `anonymous` for the `sub` property, and the aforementioned issuer for anonymous tokens.
 
-_Please make sure that your application code handles anonymous users in an intended way! The middleware does not block anonymous users, it just identifies and marks them!_
+*Please make sure that your application code handles anonymous users in an intended way! The middleware does not block anonymous users, it just identifies and marks them!*
 
 If a request does have an invalid token, an expired one, or one from an unknown issuer, the middleware returns the status code `401`.
 

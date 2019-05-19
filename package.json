@@ -12,16 +12,15 @@
       "email": "matthias.wagler@thenativeweb.io"
     }
   ],
-  "main": "dist/Limes.js",
+  "main": "lib/Limes.js",
   "dependencies": {
-    "@babel/runtime": "7.3.4",
-    "jsonwebtoken": "8.5.0"
+    "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {
-    "assertthat": "2.0.3",
-    "express": "4.16.4",
-    "roboter": "4.0.2",
-    "supertest": "4.0.0"
+    "assertthat": "3.0.0",
+    "express": "4.17.0",
+    "roboter": "6.1.0",
+    "supertest": "4.0.2"
   },
   "repository": {
     "type": "git",

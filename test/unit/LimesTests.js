@@ -8,8 +8,8 @@ const assert = require('assertthat'),
       jwt = require('jsonwebtoken'),
       request = require('supertest');
 
-const IdentityProvider = require('../../src/IdentityProvider'),
-      Limes = require('../../src/Limes');
+const IdentityProvider = require('../../lib/IdentityProvider'),
+      Limes = require('../../lib/Limes');
 
 /* eslint-disable no-sync */
 const keys = {
@@ -160,35 +160,36 @@ suite('Limes', () => {
     });
   });
 
-  suite('issueUntrustedTokenAsJson', () => {
+  suite('issueUntrustedToken', () => {
     test('is a function.', async () => {
-      assert.that(Limes.issueUntrustedTokenAsJson).is.ofType('function');
+      assert.that(Limes.issueUntrustedToken).is.ofType('function');
     });
 
     test('throws an exception if issuer is missing.', async () => {
       assert.that(() => {
-        Limes.issueUntrustedTokenAsJson({});
+        Limes.issueUntrustedToken({});
       }).is.throwing('Issuer is missing.');
     });
 
     test('throws an exception if subject is missing.', async () => {
       assert.that(() => {
-        Limes.issueUntrustedTokenAsJson({ issuer: 'https://untrusted.thenativeweb.io' });
+        Limes.issueUntrustedToken({ issuer: 'https://untrusted.thenativeweb.io' });
       }).is.throwing('Subject is missing.');
     });
 
     test('returns a JWT.', async () => {
-      const decodedToken = Limes.issueUntrustedTokenAsJson({
+      const { token, decodedToken } = Limes.issueUntrustedToken({
         issuer: 'https://untrusted.thenativeweb.io',
         subject: 'jane.doe'
       });
 
+      assert.that(token).is.startingWith('ey');
       assert.that(decodedToken.iss).is.equalTo('https://untrusted.thenativeweb.io');
       assert.that(decodedToken.sub).is.equalTo('jane.doe');
     });
 
     test('returns a JWT with the given payload.', async () => {
-      const decodedToken = Limes.issueUntrustedTokenAsJson({
+      const { token, decodedToken } = Limes.issueUntrustedToken({
         issuer: 'https://untrusted.thenativeweb.io',
         subject: 'jane.doe',
         payload: {
@@ -196,6 +197,7 @@ suite('Limes', () => {
         }
       });
 
+      assert.that(token).is.startingWith('ey');
       assert.that(decodedToken.iss).is.equalTo('https://untrusted.thenativeweb.io');
       assert.that(decodedToken.sub).is.equalTo('jane.doe');
       assert.that(decodedToken['https://untrusted.thenativeweb.io/email']).is.equalTo('jane.doe@thenativeweb.io');
@@ -283,7 +285,7 @@ suite('Limes', () => {
         }));
 
         app.get('/', (req, res) => {
-          res.json(req.user);
+          res.json({ user: req.user, token: req.token });
         });
       });
 
@@ -293,26 +295,28 @@ suite('Limes', () => {
           set('accept', 'application/json');
 
         assert.that(status).is.equalTo(200);
-        assert.that(body.iss).is.equalTo('https://untrusted.thenativeweb.io');
-        assert.that(body.sub).is.equalTo('anonymous');
+        assert.that(body.token).is.startingWith('ey');
+        assert.that(body.user.id).is.equalTo('anonymous');
+        assert.that(body.user.claims.sub).is.equalTo('anonymous');
+        assert.that(body.user.claims.iss).is.equalTo('https://untrusted.thenativeweb.io');
       });
 
       test('returns 401 for invalid tokens.', async () => {
-        await assert.that(async () => {
-          await request(app).
-            get('/').
-            set('accept', 'application/json').
-            set('authorization', 'Bearer invalidtoken');
-        }).is.throwingAsync(ex => ex.status === 401);
+        const { status } = await request(app).
+          get('/').
+          set('accept', 'application/json').
+          set('authorization', 'Bearer invalidtoken');
+
+        assert.that(status).is.equalTo(401);
       });
 
       test('returns 401 for tokens with invalid characters.', async () => {
-        await assert.that(async () => {
-          await request(app).
-            get('/').
-            set('accept', 'application/json').
-            set('authorization', 'Bearer invalid#token');
-        }).is.throwingAsync(ex => ex.status === 401);
+        const { status } = await request(app).
+          get('/').
+          set('accept', 'application/json').
+          set('authorization', 'Bearer invalid#token');
+
+        assert.that(status).is.equalTo(401);
       });
 
       test('returns 401 for expired tokens.', async () => {
@@ -325,12 +329,12 @@ suite('Limes', () => {
           subject: 'jane.doe'
         });
 
-        await assert.that(async () => {
-          await request(app).
-            get('/').
-            set('accept', 'application/json').
-            set('authorization', `Bearer ${expiredToken}`);
-        }).is.throwingAsync(ex => ex.status === 401);
+        const { status } = await request(app).
+          get('/').
+          set('accept', 'application/json').
+          set('authorization', `Bearer ${expiredToken}`);
+
+        assert.that(status).is.equalTo(401);
       });
 
       test('returns 401 for tokens that were issued by an unknown identity provider.', async () => {
@@ -343,12 +347,12 @@ suite('Limes', () => {
           subject: 'jane.doe'
         });
 
-        await assert.that(async () => {
-          await request(app).
-            get('/').
-            set('accept', 'application/json').
-            set('authorization', `Bearer ${token}`);
-        }).is.throwingAsync(ex => ex.status === 401);
+        const { status } = await request(app).
+          get('/').
+          set('accept', 'application/json').
+          set('authorization', `Bearer ${token}`);
+
+        assert.that(status).is.equalTo(401);
       });
 
       test('returns a decoded token for valid tokens.', async () => {
@@ -363,8 +367,10 @@ suite('Limes', () => {
           set('authorization', `Bearer ${token}`);
 
         assert.that(status).is.equalTo(200);
-        assert.that(body.iss).is.equalTo('https://auth.thenativeweb.io');
-        assert.that(body.sub).is.equalTo('jane.doe');
+        assert.that(body.token).is.equalTo(token);
+        assert.that(body.user.id).is.equalTo('jane.doe');
+        assert.that(body.user.claims.sub).is.equalTo('jane.doe');
+        assert.that(body.user.claims.iss).is.equalTo('https://auth.thenativeweb.io');
       });
 
       test('returns a decoded token for valid tokens sent using the query string.', async () => {
@@ -378,8 +384,10 @@ suite('Limes', () => {
           set('accept', 'application/json');
 
         assert.that(status).is.equalTo(200);
-        assert.that(body.iss).is.equalTo('https://auth.thenativeweb.io');
-        assert.that(body.sub).is.equalTo('jane.doe');
+        assert.that(body.token).is.equalTo(token);
+        assert.that(body.user.id).is.equalTo('jane.doe');
+        assert.that(body.user.claims.sub).is.equalTo('jane.doe');
+        assert.that(body.user.claims.iss).is.equalTo('https://auth.thenativeweb.io');
       });
     });
   });
