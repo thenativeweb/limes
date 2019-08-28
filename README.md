@@ -13,7 +13,13 @@ $ npm install limes
 First you need to add a reference to limes in your application:
 
 ```javascript
-const Limes = require('limes');
+const Limes = require('limes').default;
+```
+
+If you use TypeScript, use the following code instead:
+
+```typescript
+import Limes from 'limes';
 ```
 
 Now you need to create one or more identity providers. For each identity provider call the `Limes.IdentityProvider` constructor and hand over the `issuer` as well as a `privateKey` or a `certificate`, each in `.pem` format. Optionally, you may provide both:
