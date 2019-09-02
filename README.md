@@ -125,11 +125,25 @@ app.get('/', (req, res) => {
 });
 ```
 
-If a request does not provide a token, a token for an anonymous user will be issued. This issue uses `anonymous` for the `sub` property, and the aforementioned issuer for anonymous tokens.
+If a request does have an invalid token, an expired one, or one from an unknown issuer, the middleware returns the status code `401`.
+
+### Handling anonymous users
+
+If a request does not provide a token, a token for an anonymous user will be issued. This issued token uses `anonymous` for the `sub` property, and the aforementioned issuer for anonymous tokens. Anonymous tokens have an additional claim `<issuerForAnonymousTokens>/is-anonymous` set to `true`.
 
 _Please make sure that your application code handles anonymous users in an intended way! The middleware does not block anonymous users, it just identifies and marks them!_
 
-If a request does have an invalid token, an expired one, or one from an unknown issuer, the middleware returns the status code `401`.
+To differ between multiple anonymous users, your client can send a uuid using the `X-Anonymous-Id` header:
+
+    X-Anonymous-Id: <uuid>
+
+Alternatively, you may pass the uuid via the query string parameter `anonymousId`:
+
+    GET /foo/bar?anonymousId=<uuid>
+
+This issued token uses `anonymous-<uuid>` for the `sub` property.
+
+If both a token and an anonymous id are provided, the anonymous id is ignored.
 
 ## Running the build
 

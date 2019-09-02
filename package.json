@@ -27,8 +27,9 @@
     "@types/supertest": "2.0.8",
     "assertthat": "4.0.1",
     "express": "4.17.1",
-    "roboter": "7.1.1",
-    "supertest": "4.0.2"
+    "roboter": "7.1.2",
+    "supertest": "4.0.2",
+    "uuidv4": "5.0.0"
   },
   "repository": {
     "type": "git",

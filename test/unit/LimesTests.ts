@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import Limes from '../../lib/Limes';
 import path from 'path';
 import request from 'supertest';
+import uuid from 'uuidv4';
 
 /* eslint-disable no-sync */
 const keys = {
@@ -232,6 +233,36 @@ suite('Limes', (): void => {
         assert.that(body.user.id).is.equalTo('anonymous');
         assert.that(body.user.claims.sub).is.equalTo('anonymous');
         assert.that(body.user.claims.iss).is.equalTo('https://untrusted.thenativeweb.io');
+        assert.that(body.user.claims['https://untrusted.thenativeweb.io/is-anonymous']).is.true();
+      });
+
+      test('returns an anonymous with the provided id for non-authenticated requests.', async (): Promise<void> => {
+        const anonymousId = uuid();
+        const { status, body } = await request(app).
+          get('/').
+          set('accept', 'application/json').
+          set('x-anonymous-id', anonymousId);
+
+        assert.that(status).is.equalTo(200);
+        assert.that(body.token).is.startingWith('ey');
+        assert.that(body.user.id).is.equalTo(`anonymous-${anonymousId}`);
+        assert.that(body.user.claims.sub).is.equalTo(`anonymous-${anonymousId}`);
+        assert.that(body.user.claims.iss).is.equalTo('https://untrusted.thenativeweb.io');
+        assert.that(body.user.claims['https://untrusted.thenativeweb.io/is-anonymous']).is.true();
+      });
+
+      test('returns an anonymous with the provided id sent using the query string for non-authenticated requests.', async (): Promise<void> => {
+        const anonymousId = uuid();
+        const { status, body } = await request(app).
+          get(`/?anonymousId=${anonymousId}`).
+          set('accept', 'application/json');
+
+        assert.that(status).is.equalTo(200);
+        assert.that(body.token).is.startingWith('ey');
+        assert.that(body.user.id).is.equalTo(`anonymous-${anonymousId}`);
+        assert.that(body.user.claims.sub).is.equalTo(`anonymous-${anonymousId}`);
+        assert.that(body.user.claims.iss).is.equalTo('https://untrusted.thenativeweb.io');
+        assert.that(body.user.claims['https://untrusted.thenativeweb.io/is-anonymous']).is.true();
       });
 
       test('returns 401 for invalid tokens.', async (): Promise<void> => {

@@ -170,9 +170,22 @@ class Limes {
           return res.status(401).end();
         }
       } else {
+        const payload = {
+          [`${issuerForAnonymousTokens}/is-anonymous`]: true
+        };
+
+        let subject = 'anonymous';
+
+        if (req.headers['x-anonymous-id']) {
+          subject += `-${req.headers['x-anonymous-id']}`;
+        } else if (req.query.anonymousId) {
+          subject += `-${req.query.anonymousId}`;
+        }
+
         ({ token, decodedToken } = Limes.issueUntrustedToken({
           issuer: issuerForAnonymousTokens,
-          subject: 'anonymous'
+          subject,
+          payload
         }));
       }
 
