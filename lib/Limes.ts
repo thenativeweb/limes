@@ -43,8 +43,7 @@ class Limes {
     } {
     const expiresInMinutes = 60;
 
-    // The secret is not used with the algorithm 'none'.
-    const token = jwt.sign(payload, '', {
+    const token = jwt.sign(payload, 'secret-irrelevant-for-none-algorithm', {
       algorithm: 'none',
       subject,
       issuer,
@@ -107,7 +106,7 @@ class Limes {
     }
 
     if (typeof untrustedDecodedToken === 'string') {
-      throw new Error('Malformed token payload.');
+      throw new Error('Token payload malformed.');
     }
 
     const identityProvider = this.getIdentityProviderByIssuer({
@@ -178,7 +177,7 @@ class Limes {
       }
 
       if (!decodedToken) {
-        return res.status(401).end();
+        return res.status(400).end();
       }
 
       /* eslint-disable no-param-reassign */
