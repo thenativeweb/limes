@@ -2,6 +2,16 @@
 
 limes authenticates users.
 
+## Status
+
+| Category         | Status                                                                                                                                 |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Version          | [![npm](https://img.shields.io/npm/v/limes)](https://www.npmjs.com/package/limes)                                                      |
+| Dependencies     | ![David](https://img.shields.io/david/thenativeweb/limes)                                                                              |
+| Dev dependencies | ![David](https://img.shields.io/david/dev/thenativeweb/limes)                                                                          |
+| Build            | [![CircleCI](https://img.shields.io/circleci/build/github/thenativeweb/limes)](https://circleci.com/gh/thenativeweb/limes/tree/master) |
+| License          | ![GitHub](https://img.shields.io/github/license/thenativeweb/limes)                                                                    |
+
 ## Installation
 
 ```shell
@@ -13,7 +23,13 @@ $ npm install limes
 First you need to add a reference to limes in your application:
 
 ```javascript
-const Limes = require('limes');
+const Limes = require('limes').default;
+```
+
+If you use TypeScript, use the following code instead:
+
+```typescript
+import Limes from 'limes';
 ```
 
 Now you need to create one or more identity providers. For each identity provider call the `Limes.IdentityProvider` constructor and hand over the `issuer` as well as a `privateKey` or a `certificate`, each in `.pem` format. Optionally, you may provide both:
@@ -120,14 +136,3 @@ If a request does have an invalid token, an expired one, or one from an unknown 
 ```shell
 $ npx roboter
 ```
-
-## License
-
-The MIT License (MIT)
-Copyright (c) 2014-2019 the native web.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

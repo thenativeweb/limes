@@ -1,21 +1,25 @@
-'use strict';
-
 const minutesPerDay = 24 * 60;
 
 class IdentityProvider {
-  constructor ({
+  public issuer: string;
+
+  public privateKey: Buffer;
+
+  public certificate: Buffer;
+
+  public expiresInMinutes: number;
+
+  public constructor ({
     issuer,
     privateKey,
     certificate,
     expiresInMinutes = minutesPerDay
+  }: {
+    issuer: string;
+    privateKey: Buffer;
+    certificate: Buffer;
+    expiresInMinutes?: number;
   }) {
-    if (!issuer) {
-      throw new Error('Issuer is missing.');
-    }
-    if (!privateKey && !certificate) {
-      throw new Error('Private key and / or certificate is missing.');
-    }
-
     this.issuer = issuer;
     this.privateKey = privateKey;
     this.certificate = certificate;
@@ -23,4 +27,4 @@ class IdentityProvider {
   }
 }
 
-module.exports = IdentityProvider;
+export default IdentityProvider;

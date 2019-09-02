@@ -1,15 +1,12 @@
-'use strict';
-
-const fs = require('fs'),
-      path = require('path');
-
-const assert = require('assertthat'),
-      express = require('express'),
-      jwt = require('jsonwebtoken'),
-      request = require('supertest');
-
-const IdentityProvider = require('../../lib/IdentityProvider'),
-      Limes = require('../../lib/Limes');
+import assert from 'assertthat';
+import express from 'express';
+import { Express } from 'express-serve-static-core';
+import fs from 'fs';
+import IdentityProvider from '../../lib/IdentityProvider';
+import jwt from 'jsonwebtoken';
+import Limes from '../../lib/Limes';
+import path from 'path';
+import request from 'supertest';
 
 /* eslint-disable no-sync */
 const keys = {
@@ -28,7 +25,7 @@ const keys = {
 };
 /* eslint-enable no-sync */
 
-suite('Limes', () => {
+suite('Limes', (): void => {
   const identityProviderThenativeweb = new Limes.IdentityProvider({
     issuer: 'https://auth.thenativeweb.io',
     privateKey: keys.thenativeweb.privateKey,
@@ -54,58 +51,40 @@ suite('Limes', () => {
     expiresInMinutes: -5
   });
 
-  let limes;
+  let limes: Limes;
 
-  setup(() => {
+  setup((): void => {
     limes = new Limes({
       identityProviders: [ identityProviderThenativeweb, identityProviderIntuity ]
     });
   });
 
-  test('is a function.', async () => {
+  test('is a function.', async (): Promise<void> => {
     assert.that(Limes).is.ofType('function');
   });
 
-  test('throws an exception if identity providers are missing.', async () => {
-    assert.that(() => {
-      /* eslint-disable no-new */
-      new Limes({});
-      /* eslint-enable no-new */
-    }).is.throwing('Identity providers are missing.');
-  });
-
-  test('throws an exception if identity providers are empty.', async () => {
-    assert.that(() => {
+  test('throws an exception if identity providers are empty.', async (): Promise<void> => {
+    assert.that((): void => {
       /* eslint-disable no-new */
       new Limes({ identityProviders: []});
       /* eslint-enable no-new */
     }).is.throwing('Identity providers are missing.');
   });
 
-  suite('IdentityProvider', () => {
-    test('is the IdentityProvider constructor.', async () => {
+  suite('IdentityProvider', (): void => {
+    test('is the IdentityProvider constructor.', async (): Promise<void> => {
       assert.that(Limes.IdentityProvider).is.sameAs(IdentityProvider);
     });
   });
 
-  suite('getIdentityProviderByIssuer', () => {
-    test('is a function.', async () => {
-      assert.that(limes.getIdentityProviderByIssuer).is.ofType('function');
-    });
-
-    test('throws an error if issuer is missing.', async () => {
-      assert.that(() => {
-        limes.getIdentityProviderByIssuer({});
-      }).is.throwing('Issuer is missing.');
-    });
-
-    test('throws an error if issuer does not exist.', async () => {
-      assert.that(() => {
+  suite('getIdentityProviderByIssuer', (): void => {
+    test('throws an error if issuer does not exist.', async (): Promise<void> => {
+      assert.that((): void => {
         limes.getIdentityProviderByIssuer({ issuer: 'https://auth.example.com' });
       }).is.throwing(`Issuer 'https://auth.example.com' not found.`);
     });
 
-    test('returns the requested identity provider.', async () => {
+    test('returns the requested identity provider.', async (): Promise<void> => {
       const identityProvider = limes.getIdentityProviderByIssuer({
         issuer: 'https://auth.thenativeweb.io'
       });
@@ -114,36 +93,20 @@ suite('Limes', () => {
     });
   });
 
-  suite('issueToken', () => {
-    test('is a function.', async () => {
-      assert.that(limes.issueToken).is.ofType('function');
-    });
-
-    test('throws an exception if issuer is missing.', async () => {
-      assert.that(() => {
-        limes.issueToken({});
-      }).is.throwing('Issuer is missing.');
-    });
-
-    test('throws an exception if subject is missing.', async () => {
-      assert.that(() => {
-        limes.issueToken({ issuer: 'https://auth.thenativeweb.io' });
-      }).is.throwing('Subject is missing.');
-    });
-
-    test('returns a JWT.', async () => {
+  suite('issueToken', (): void => {
+    test('returns a JWT.', async (): Promise<void> => {
       const token = limes.issueToken({
         issuer: 'https://auth.thenativeweb.io',
         subject: 'jane.doe'
       });
 
-      const decodedToken = await jwt.verify(token, keys.thenativeweb.certificate, { issuer: 'https://auth.thenativeweb.io' });
+      const decodedToken = jwt.verify(token, keys.thenativeweb.certificate, { issuer: 'https://auth.thenativeweb.io' }) as { [key: string]: any};
 
       assert.that(decodedToken.iss).is.equalTo('https://auth.thenativeweb.io');
       assert.that(decodedToken.sub).is.equalTo('jane.doe');
     });
 
-    test('returns a JWT with the given payload.', async () => {
+    test('returns a JWT with the given payload.', async (): Promise<void> => {
       const token = limes.issueToken({
         issuer: 'https://auth.thenativeweb.io',
         subject: 'jane.doe',
@@ -152,7 +115,7 @@ suite('Limes', () => {
         }
       });
 
-      const decodedToken = await jwt.verify(token, keys.thenativeweb.certificate, { issuer: 'https://auth.thenativeweb.io' });
+      const decodedToken = jwt.verify(token, keys.thenativeweb.certificate, { issuer: 'https://auth.thenativeweb.io' }) as { [key: string]: any};
 
       assert.that(decodedToken.iss).is.equalTo('https://auth.thenativeweb.io');
       assert.that(decodedToken.sub).is.equalTo('jane.doe');
@@ -160,42 +123,32 @@ suite('Limes', () => {
     });
   });
 
-  suite('issueUntrustedToken', () => {
-    test('is a function.', async () => {
-      assert.that(Limes.issueUntrustedToken).is.ofType('function');
-    });
-
-    test('throws an exception if issuer is missing.', async () => {
-      assert.that(() => {
-        Limes.issueUntrustedToken({});
-      }).is.throwing('Issuer is missing.');
-    });
-
-    test('throws an exception if subject is missing.', async () => {
-      assert.that(() => {
-        Limes.issueUntrustedToken({ issuer: 'https://untrusted.thenativeweb.io' });
-      }).is.throwing('Subject is missing.');
-    });
-
-    test('returns a JWT.', async () => {
+  suite('issueUntrustedToken', (): void => {
+    test('returns a JWT.', async (): Promise<void> => {
       const { token, decodedToken } = Limes.issueUntrustedToken({
         issuer: 'https://untrusted.thenativeweb.io',
         subject: 'jane.doe'
-      });
+      }) as {
+        token: string;
+        decodedToken: { [key: string]: any};
+      };
 
       assert.that(token).is.startingWith('ey');
       assert.that(decodedToken.iss).is.equalTo('https://untrusted.thenativeweb.io');
       assert.that(decodedToken.sub).is.equalTo('jane.doe');
     });
 
-    test('returns a JWT with the given payload.', async () => {
+    test('returns a JWT with the given payload.', async (): Promise<void> => {
       const { token, decodedToken } = Limes.issueUntrustedToken({
         issuer: 'https://untrusted.thenativeweb.io',
         subject: 'jane.doe',
         payload: {
           'https://untrusted.thenativeweb.io/email': 'jane.doe@thenativeweb.io'
         }
-      });
+      }) as {
+        token: string;
+        decodedToken: { [key: string]: any};
+      };
 
       assert.that(token).is.startingWith('ey');
       assert.that(decodedToken.iss).is.equalTo('https://untrusted.thenativeweb.io');
@@ -204,18 +157,8 @@ suite('Limes', () => {
     });
   });
 
-  suite('verifyToken', () => {
-    test('is a function.', async () => {
-      assert.that(limes.verifyToken).is.ofType('function');
-    });
-
-    test('throws an error if token is missing.', async () => {
-      await assert.that(async () => {
-        await limes.verifyToken({});
-      }).is.throwingAsync('Token is missing.');
-    });
-
-    test('returns the decoded token if the token is valid.', async () => {
+  suite('verifyToken', (): void => {
+    test('returns the decoded token if the token is valid.', async (): Promise<void> => {
       const token = limes.issueToken({
         issuer: 'https://auth.thenativeweb.io',
         subject: 'jane.doe'
@@ -227,7 +170,7 @@ suite('Limes', () => {
       assert.that(decodedToken.sub).is.equalTo('jane.doe');
     });
 
-    test('throws an error if the token is valid, but was issued by an unknown identity provider.', async () => {
+    test('throws an error if the token is valid, but was issued by an unknown identity provider.', async (): Promise<void> => {
       const otherLimes = new Limes({
         identityProviders: [ identityProviderUnknown ]
       });
@@ -237,36 +180,26 @@ suite('Limes', () => {
         subject: 'jane.doe'
       });
 
-      await assert.that(async () => {
+      await assert.that(async (): Promise<void> => {
         await limes.verifyToken({ token });
       }).is.throwingAsync(`Issuer 'https://auth.example.com' not found.`);
     });
 
-    test('throws an error if the token is not valid.', async () => {
-      await assert.that(async () => {
+    test('throws an error if the token is not valid.', async (): Promise<void> => {
+      await assert.that(async (): Promise<void> => {
         await limes.verifyToken({ token: 'invalidtoken' });
       }).is.throwingAsync('Failed to verify token.');
     });
 
-    test('throws an error if the token contains invalid characters.', async () => {
-      await assert.that(async () => {
+    test('throws an error if the token contains invalid characters.', async (): Promise<void> => {
+      await assert.that(async (): Promise<void> => {
         await limes.verifyToken({ token: 'invalid#token' });
       }).is.throwingAsync('Failed to verify token.');
     });
   });
 
-  suite('verifyTokenMiddleware', () => {
-    test('is a function.', async () => {
-      assert.that(limes.verifyTokenMiddleware).is.ofType('function');
-    });
-
-    test('throws an error if issuer for anonymous tokens is missing.', async () => {
-      assert.that(() => {
-        limes.verifyTokenMiddleware({});
-      }).is.throwing('Issuer for anonymous tokens is missing.');
-    });
-
-    test('returns a function.', async () => {
+  suite('verifyTokenMiddleware', (): void => {
+    test('returns a function.', async (): Promise<void> => {
       const middleware = limes.verifyTokenMiddleware({
         issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io'
       });
@@ -274,22 +207,22 @@ suite('Limes', () => {
       assert.that(middleware).is.ofType('function');
     });
 
-    suite('middleware', () => {
-      let app;
+    suite('middleware', (): void => {
+      let app: Express;
 
-      setup(() => {
+      setup((): void => {
         app = express();
 
         app.use(limes.verifyTokenMiddleware({
           issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io'
         }));
 
-        app.get('/', (req, res) => {
+        app.get('/', (req, res): void => {
           res.json({ user: req.user, token: req.token });
         });
       });
 
-      test('returns an anonymous token for non-authenticated requests.', async () => {
+      test('returns an anonymous token for non-authenticated requests.', async (): Promise<void> => {
         const { status, body } = await request(app).
           get('/').
           set('accept', 'application/json');
@@ -301,7 +234,7 @@ suite('Limes', () => {
         assert.that(body.user.claims.iss).is.equalTo('https://untrusted.thenativeweb.io');
       });
 
-      test('returns 401 for invalid tokens.', async () => {
+      test('returns 401 for invalid tokens.', async (): Promise<void> => {
         const { status } = await request(app).
           get('/').
           set('accept', 'application/json').
@@ -310,7 +243,7 @@ suite('Limes', () => {
         assert.that(status).is.equalTo(401);
       });
 
-      test('returns 401 for tokens with invalid characters.', async () => {
+      test('returns 401 for tokens with invalid characters.', async (): Promise<void> => {
         const { status } = await request(app).
           get('/').
           set('accept', 'application/json').
@@ -319,7 +252,7 @@ suite('Limes', () => {
         assert.that(status).is.equalTo(401);
       });
 
-      test('returns 401 for expired tokens.', async () => {
+      test('returns 401 for expired tokens.', async (): Promise<void> => {
         limes = new Limes({
           identityProviders: [ identityProviderExpired ]
         });
@@ -337,7 +270,7 @@ suite('Limes', () => {
         assert.that(status).is.equalTo(401);
       });
 
-      test('returns 401 for tokens that were issued by an unknown identity provider.', async () => {
+      test('returns 401 for tokens that were issued by an unknown identity provider.', async (): Promise<void> => {
         const otherLimes = new Limes({
           identityProviders: [ identityProviderUnknown ]
         });
@@ -355,7 +288,7 @@ suite('Limes', () => {
         assert.that(status).is.equalTo(401);
       });
 
-      test('returns a decoded token for valid tokens.', async () => {
+      test('returns a decoded token for valid tokens.', async (): Promise<void> => {
         const token = limes.issueToken({
           issuer: 'https://auth.thenativeweb.io',
           subject: 'jane.doe'
@@ -373,7 +306,7 @@ suite('Limes', () => {
         assert.that(body.user.claims.iss).is.equalTo('https://auth.thenativeweb.io');
       });
 
-      test('returns a decoded token for valid tokens sent using the query string.', async () => {
+      test('returns a decoded token for valid tokens sent using the query string.', async (): Promise<void> => {
         const token = limes.issueToken({
           issuer: 'https://auth.thenativeweb.io',
           subject: 'jane.doe'
