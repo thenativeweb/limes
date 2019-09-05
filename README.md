@@ -24,8 +24,6 @@ First you need to add a reference to limes in your application:
 
 ```javascript
 const { default: Limes, IdentityProvider } = require('limes');
-// or just
-const Limes = require('limes').default;
 ```
 
 If you use TypeScript, use the following code instead:
