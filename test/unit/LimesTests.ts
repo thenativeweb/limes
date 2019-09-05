@@ -2,12 +2,11 @@ import assert from 'assertthat';
 import express from 'express';
 import { Express } from 'express-serve-static-core';
 import fs from 'fs';
-import IdentityProvider from '../../lib/IdentityProvider';
 import jwt from 'jsonwebtoken';
-import Limes from '../../lib/Limes';
 import path from 'path';
 import request from 'supertest';
 import uuid from 'uuidv4';
+import Limes, { IdentityProvider } from '../../lib/Limes';
 
 /* eslint-disable no-sync */
 const keys = {
@@ -27,25 +26,25 @@ const keys = {
 /* eslint-enable no-sync */
 
 suite('Limes', (): void => {
-  const identityProviderThenativeweb = new Limes.IdentityProvider({
+  const identityProviderThenativeweb = new IdentityProvider({
     issuer: 'https://auth.thenativeweb.io',
     privateKey: keys.thenativeweb.privateKey,
     certificate: keys.thenativeweb.certificate
   });
 
-  const identityProviderIntuity = new Limes.IdentityProvider({
+  const identityProviderIntuity = new IdentityProvider({
     issuer: 'https://auth.intuity.de',
     privateKey: keys.intuity.privateKey,
     certificate: keys.intuity.certificate
   });
 
-  const identityProviderUnknown = new Limes.IdentityProvider({
+  const identityProviderUnknown = new IdentityProvider({
     issuer: 'https://auth.example.com',
     privateKey: keys.example.privateKey,
     certificate: keys.example.certificate
   });
 
-  const identityProviderExpired = new Limes.IdentityProvider({
+  const identityProviderExpired = new IdentityProvider({
     issuer: 'https://auth.thenativeweb.io',
     privateKey: keys.thenativeweb.privateKey,
     certificate: keys.thenativeweb.certificate,
@@ -74,7 +73,7 @@ suite('Limes', (): void => {
 
   suite('IdentityProvider', (): void => {
     test('is the IdentityProvider constructor.', async (): Promise<void> => {
-      assert.that(Limes.IdentityProvider).is.sameAs(IdentityProvider);
+      assert.that(IdentityProvider).is.sameAs(IdentityProvider);
     });
   });
 

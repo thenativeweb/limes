@@ -17,10 +17,6 @@ declare global {
 }
 
 class Limes {
-  /* eslint-disable @typescript-eslint/member-naming */
-  public static IdentityProvider = IdentityProvider;
-  /* eslint-enable @typescript-eslint/member-naming */
-
   public identityProviders: IdentityProvider[];
 
   public constructor ({ identityProviders }: {
@@ -207,3 +203,6 @@ class Limes {
 }
 
 export default Limes;
+export {
+  IdentityProvider
+};

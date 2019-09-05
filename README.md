@@ -23,19 +23,21 @@ $ npm install limes
 First you need to add a reference to limes in your application:
 
 ```javascript
+const { default: Limes, IdentityProvider } = require('limes');
+// or just
 const Limes = require('limes').default;
 ```
 
 If you use TypeScript, use the following code instead:
 
 ```typescript
-import Limes from 'limes';
+import Limes, { IdentityProvider } from 'limes';
 ```
 
-Now you need to create one or more identity providers. For each identity provider call the `Limes.IdentityProvider` constructor and hand over the `issuer` as well as a `privateKey` or a `certificate`, each in `.pem` format. Optionally, you may provide both:
+Now you need to create one or more identity providers. For each identity provider call the `IdentityProvider` constructor and hand over the `issuer` as well as a `privateKey` or a `certificate`, each in `.pem` format. Optionally, you may provide both:
 
 ```javascript
-const identityProvider = new Limes.IdentityProvider({
+const identityProvider = new IdentityProvider({
   issuer: 'https://auth.thenativeweb.io',
   privateKey: await readFile(path.join(__dirname, 'privateKey.pem')),
   certificate: await readFile(path.join(__dirname, 'certificate.pem'))
