@@ -118,7 +118,7 @@ class Limes {
             algorithms: [ 'RS256' ],
             issuer: identityProvider.issuer
           },
-          (err: VerifyErrors, verifiedToken: { [key: string]: any | undefined } | string): void => {
+          (err: VerifyErrors | undefined, verifiedToken: { [key: string]: any | undefined } | string): void => {
             if (err) {
               return reject(new Error('Failed to verify token.'));
             }
