@@ -76,6 +76,10 @@ class Limes {
   }): string {
     const identityProvider = this.getIdentityProviderByIssuer({ issuer });
 
+    if (!identityProvider.privateKey) {
+      throw new Error('Private key is missing.');
+    }
+
     const token = jwt.sign(payload, identityProvider.privateKey, {
       algorithm: 'RS256',
       subject,
@@ -111,6 +115,10 @@ class Limes {
 
     const decodedToken = await new Promise((resolve: (value?: { [key: string]: any | undefined }) => void, reject: (reason?: any) => void): void => {
       try {
+        if (!identityProvider.certificate) {
+          throw new Error('Certificate is missing.');
+        }
+
         jwt.verify(
           token,
           identityProvider.certificate,

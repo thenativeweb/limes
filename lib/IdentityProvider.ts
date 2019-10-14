@@ -3,9 +3,9 @@ const minutesPerDay = 24 * 60;
 class IdentityProvider {
   public issuer: string;
 
-  public privateKey: Buffer;
+  public privateKey?: Buffer;
 
-  public certificate: Buffer;
+  public certificate?: Buffer;
 
   public expiresInMinutes: number;
 
@@ -16,8 +16,8 @@ class IdentityProvider {
     expiresInMinutes = minutesPerDay
   }: {
     issuer: string;
-    privateKey: Buffer;
-    certificate: Buffer;
+    privateKey?: Buffer;
+    certificate?: Buffer;
     expiresInMinutes?: number;
   }) {
     this.issuer = issuer;
