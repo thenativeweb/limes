@@ -27,7 +27,7 @@
     "@types/supertest": "2.0.8",
     "assertthat": "4.0.2",
     "express": "4.17.1",
-    "roboter": "9.0.4",
+    "roboter": "9.0.5",
     "supertest": "4.0.2",
     "uuidv4": "5.0.1"
   },
