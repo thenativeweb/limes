@@ -225,5 +225,6 @@ class Limes {
 
 export default Limes;
 export {
+  Claims,
   IdentityProvider
 };
