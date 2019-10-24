@@ -9,7 +9,7 @@ declare global {
       token?: string;
       user?: {
         id: string;
-        claims: object | string;
+        claims: Record<string, any>;
       };
     }
   }
@@ -32,10 +32,10 @@ class Limes {
   public static issueUntrustedToken ({ issuer, subject, payload = {}}: {
     issuer: string;
     subject: string;
-    payload?: object;
+    payload?: Record<string, any>;
   }): {
       token: string;
-      decodedToken: null | { [key: string]: any };
+      decodedToken: null | Record<string, any>;
     } {
     const expiresInMinutes = 60;
 
@@ -72,7 +72,7 @@ class Limes {
   public issueToken ({ issuer, subject, payload = {}}: {
     issuer: string;
     subject: string;
-    payload?: object;
+    payload?: Record<string, any>;
   }): string {
     const identityProvider = this.getIdentityProviderByIssuer({ issuer });
 
@@ -92,7 +92,7 @@ class Limes {
 
   public async verifyToken ({ token }: {
     token: string;
-  }): Promise<{ [key: string]: any | undefined }> {
+  }): Promise<Record<string, any>> {
     let untrustedDecodedToken;
 
     try {
@@ -113,7 +113,7 @@ class Limes {
       issuer: untrustedDecodedToken.iss
     });
 
-    const decodedToken = await new Promise((resolve: (value?: { [key: string]: any | undefined }) => void, reject: (reason?: any) => void): void => {
+    const decodedToken: Record<string, any> = await new Promise((resolve, reject): void => {
       try {
         if (!identityProvider.certificate) {
           throw new Error('Certificate is missing.');
@@ -126,7 +126,7 @@ class Limes {
             algorithms: [ 'RS256' ],
             issuer: identityProvider.issuer
           },
-          (err: VerifyErrors | undefined, verifiedToken: { [key: string]: any | undefined } | string): void => {
+          (err: VerifyErrors | undefined, verifiedToken): void => {
             if (err) {
               return reject(new Error('Failed to verify token.'));
             }
