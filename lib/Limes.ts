@@ -1,3 +1,4 @@
+import { Claims } from './Claims';
 import IdentityProvider from './IdentityProvider';
 import { RequestHandler } from 'express-serve-static-core';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
@@ -9,7 +10,7 @@ declare global {
       token?: string;
       user?: {
         id: string;
-        claims: Record<string, any>;
+        claims: Claims;
       };
     }
   }
@@ -35,7 +36,7 @@ class Limes {
     payload?: Record<string, any>;
   }): {
       token: string;
-      decodedToken: null | Record<string, any>;
+      decodedToken: null | Claims;
     } {
     const expiresInMinutes = 60;
 
@@ -48,11 +49,17 @@ class Limes {
 
     const decodedToken = jwt.decode(token);
 
+    if (!decodedToken) {
+      throw new Error('Token decoding failed.');
+    }
     if (typeof decodedToken === 'string') {
       throw new Error('Token payload malformed.');
     }
+    if (!decodedToken.sub) {
+      throw new Error('Token payload malformed.');
+    }
 
-    return { token, decodedToken };
+    return { token, decodedToken: { ...decodedToken, sub: decodedToken.sub }};
   }
 
   public getIdentityProviderByIssuer ({ issuer }: {
@@ -92,7 +99,7 @@ class Limes {
 
   public async verifyToken ({ token }: {
     token: string;
-  }): Promise<Record<string, any>> {
+  }): Promise<Claims> {
     let untrustedDecodedToken;
 
     try {
@@ -113,7 +120,7 @@ class Limes {
       issuer: untrustedDecodedToken.iss
     });
 
-    const decodedToken: Record<string, any> = await new Promise((resolve, reject): void => {
+    const decodedToken: Claims = await new Promise((resolve, reject): void => {
       try {
         if (!identityProvider.certificate) {
           throw new Error('Certificate is missing.');
@@ -126,7 +133,7 @@ class Limes {
             algorithms: [ 'RS256' ],
             issuer: identityProvider.issuer
           },
-          (err: VerifyErrors | undefined, verifiedToken): void => {
+          (err: VerifyErrors | undefined, verifiedToken: string | Record<string, any>): void => {
             if (err) {
               return reject(new Error('Failed to verify token.'));
             }
@@ -134,8 +141,14 @@ class Limes {
             if (typeof verifiedToken === 'string') {
               throw new Error('Token payload malformed.');
             }
+            if (!verifiedToken.sub) {
+              throw new Error('Token payload does not contain sub.');
+            }
 
-            resolve(verifiedToken);
+            resolve({
+              ...verifiedToken,
+              sub: verifiedToken.sub
+            });
           }
         );
       } catch (ex) {
