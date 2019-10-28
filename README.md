@@ -52,6 +52,17 @@ const limes = new Limes({
 });
 ```
 
+By default, tokens issues by an identity provider are valid for 24 hours. To use a custom expiration time, provide the `expiresInMinutes` option:
+
+```javascript
+const identityProvider = new IdentityProvider({
+  issuer: 'https://auth.thenativeweb.io',
+  privateKey: await readFile(path.join(__dirname, 'privateKey.pem')),
+  certificate: await readFile(path.join(__dirname, 'certificate.pem')),
+  expiresInMinutes: 60
+});
+```
+
 ### Issuing tokens
 
 To issue a token call the `issueToken` function and provide the `issuer` and the `subject` you want to use as well as an optional payload:
