@@ -27,4 +27,4 @@ class IdentityProvider {
   }
 }
 
-export default IdentityProvider;
+export { IdentityProvider };

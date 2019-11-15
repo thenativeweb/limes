@@ -1,12 +1,12 @@
-import assert from 'assertthat';
+import { assert } from 'assertthat';
 import express from 'express';
 import { Express } from 'express-serve-static-core';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import request from 'supertest';
-import uuid from 'uuidv4';
-import Limes, { IdentityProvider } from '../../lib/Limes';
+import { uuid } from 'uuidv4';
+import { IdentityProvider, Limes } from '../../lib/Limes';
 
 /* eslint-disable no-sync */
 const keys = {

@@ -1,5 +1,5 @@
 import { Claims } from './Claims';
-import IdentityProvider from './IdentityProvider';
+import { IdentityProvider } from './IdentityProvider';
 import { RequestHandler } from 'express-serve-static-core';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 
@@ -223,8 +223,8 @@ class Limes {
   }
 }
 
-export default Limes;
 export {
+  Limes,
   Claims,
   IdentityProvider
 };

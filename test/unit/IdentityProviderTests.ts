@@ -1,6 +1,6 @@
-import assert from 'assertthat';
+import { assert } from 'assertthat';
 import fs from 'fs';
-import IdentityProvider from '../../lib/IdentityProvider';
+import { IdentityProvider } from '../../lib/IdentityProvider';
 import path from 'path';
 
 /* eslint-disable no-sync */
