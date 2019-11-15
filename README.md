@@ -146,15 +146,11 @@ _Please make sure that your application code handles anonymous users in an inten
 
 To differ between multiple anonymous users, your client can send a uuid using the `X-Anonymous-Id` header:
 
-```
-X-Anonymous-Id: <uuid>
-```
+    X-Anonymous-Id: <uuid>
 
 Alternatively, you may pass the uuid via the query string parameter `anonymousId`:
 
-```
-GET /foo/bar?anonymousId=<uuid>
-```
+    GET /foo/bar?anonymousId=<uuid>
 
 This issued token uses `anonymous-<uuid>` for the `sub` property.
 
