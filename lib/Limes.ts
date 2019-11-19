@@ -1,6 +1,6 @@
 import { Claims } from './Claims';
 import { IdentityProvider } from './IdentityProvider';
-import { RequestHandler } from 'express-serve-static-core';
+import { RequestHandler } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 
 declare global {
