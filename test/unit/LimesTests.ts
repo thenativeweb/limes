@@ -53,7 +53,7 @@ suite('Limes', (): void => {
 
   let limes: Limes;
 
-  setup((): void => {
+  setup(async (): Promise<void> => {
     limes = new Limes({
       identityProviders: [ identityProviderThenativeweb, identityProviderIntuity ]
     });
@@ -210,7 +210,7 @@ suite('Limes', (): void => {
     suite('middleware', (): void => {
       let app: Express;
 
-      setup((): void => {
+      setup(async (): Promise<void> => {
         app = express();
 
         app.use(limes.verifyTokenMiddleware({
