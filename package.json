@@ -30,7 +30,7 @@
     "roboter": "11.0.3",
     "semantic-release-configuration": "1.0.11",
     "supertest": "4.0.2",
-    "uuidv4": "6.0.1"
+    "uuidv4": "6.0.2"
   },
   "repository": {
     "type": "git",
