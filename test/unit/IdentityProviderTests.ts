@@ -9,10 +9,6 @@ const certificate = fs.readFileSync(path.join(__dirname, '..', 'shared', 'keys',
 /* eslint-enable no-sync */
 
 suite('IdentityProvider', (): void => {
-  test('is a function.', async (): Promise<void> => {
-    assert.that(IdentityProvider).is.ofType('function');
-  });
-
   test('constructs an IdentityProvider.', async (): Promise<void> => {
     const identityProvider = new IdentityProvider({
       issuer: 'https://auth.thenativeweb.io/',

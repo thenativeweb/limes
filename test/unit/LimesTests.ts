@@ -59,18 +59,6 @@ suite('Limes', (): void => {
     });
   });
 
-  test('is a function.', async (): Promise<void> => {
-    assert.that(Limes).is.ofType('function');
-  });
-
-  test('throws an exception if identity providers are empty.', async (): Promise<void> => {
-    assert.that((): void => {
-      /* eslint-disable no-new */
-      new Limes({ identityProviders: []});
-      /* eslint-enable no-new */
-    }).is.throwing('Identity providers are missing.');
-  });
-
   suite('IdentityProvider', (): void => {
     test('is the IdentityProvider constructor.', async (): Promise<void> => {
       assert.that(IdentityProvider).is.sameAs(IdentityProvider);

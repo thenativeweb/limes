@@ -23,10 +23,6 @@ class Limes {
   public constructor ({ identityProviders }: {
     identityProviders: IdentityProvider[];
   }) {
-    if (identityProviders.length === 0) {
-      throw new Error('Identity providers are missing.');
-    }
-
     this.identityProviders = identityProviders;
   }
 
