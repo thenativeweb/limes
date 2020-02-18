@@ -44,7 +44,7 @@ const identityProvider = new IdentityProvider({
 
 _Please note that you have to specify the private key if you want to issue tokens and the certificate if you want to verify them._
 
-Then you can call the `Limes` constructor function to create a new limes instance. Hand over an array of one or more of the previously created identity providers:
+Then you can call the `Limes` constructor function to create a new limes instance. Hand over an array of the previously created identity providers:
 
 ```javascript
 const limes = new Limes({
