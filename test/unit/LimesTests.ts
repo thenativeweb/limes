@@ -1,6 +1,5 @@
 import { assert } from 'assertthat';
-import express from 'express';
-import { Express } from 'express-serve-static-core';
+import express, { Express, Request } from 'express';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import path from 'path';
@@ -340,6 +339,138 @@ suite('Limes', (): void => {
         assert.that(body.user.claims.sub).is.equalTo('jane.doe');
         assert.that(body.user.claims.iss).is.equalTo('https://auth.thenativeweb.io');
       });
+    });
+  });
+
+  suite('verifyTokenInWebsocketUpgradeRequest', (): void => {
+    test('returns an anonymous token for non-authenticated requests.', async (): Promise<void> => {
+      const upgradeRequest: Request = {
+        headers: {}
+      } as Request;
+
+      const result = await limes.verifyTokenInWebsocketUpgradeRequest({
+        issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
+        upgradeRequest
+      });
+
+      assert.that(result.token).is.startingWith('ey');
+      assert.that(result.user.id).is.equalTo('anonymous');
+      assert.that(result.user.claims.sub).is.equalTo('anonymous');
+      assert.that(result.user.claims.iss).is.equalTo('https://untrusted.thenativeweb.io');
+      assert.that(result.user.claims['https://untrusted.thenativeweb.io/is-anonymous']).is.true();
+    });
+
+    test('returns an anonymous with the provided id for non-authenticated requests.', async (): Promise<void> => {
+      const anonymousId = uuid();
+      const upgradeRequest: Request = {
+        headers: {
+          'x-anonymous-id': anonymousId
+        }
+      } as unknown as Request;
+
+      const result = await limes.verifyTokenInWebsocketUpgradeRequest({
+        issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
+        upgradeRequest
+      });
+
+      assert.that(result.token).is.startingWith('ey');
+      assert.that(result.user.id).is.equalTo(`anonymous-${anonymousId}`);
+      assert.that(result.user.claims.sub).is.equalTo(`anonymous-${anonymousId}`);
+      assert.that(result.user.claims.iss).is.equalTo('https://untrusted.thenativeweb.io');
+      assert.that(result.user.claims['https://untrusted.thenativeweb.io/is-anonymous']).is.true();
+    });
+
+    test('throws an error for invalid tokens.', async (): Promise<void> => {
+      const upgradeRequest: Request = {
+        headers: {
+          authorization: 'Bearer invalidtoken'
+        }
+      } as unknown as Request;
+
+      await assert.that(async (): Promise<any> => await limes.verifyTokenInWebsocketUpgradeRequest({
+        issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
+        upgradeRequest
+      })).is.throwingAsync();
+    });
+
+    test('throws an error for tokens with invalid characters.', async (): Promise<void> => {
+      const upgradeRequest: Request = {
+        headers: {
+          authorization: 'Bearer invalid#token'
+        }
+      } as unknown as Request;
+
+      await assert.that(async (): Promise<any> => await limes.verifyTokenInWebsocketUpgradeRequest({
+        issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
+        upgradeRequest
+      })).is.throwingAsync();
+    });
+
+    test('throws an error for expired tokens.', async (): Promise<void> => {
+      limes = new Limes({
+        identityProviders: [ identityProviderExpired ]
+      });
+
+      const expiredToken = limes.issueToken({
+        issuer: 'https://auth.thenativeweb.io',
+        subject: 'jane.doe'
+      });
+
+      const upgradeRequest: Request = {
+        headers: {
+          authorization: `Bearer ${expiredToken}`
+        }
+      } as unknown as Request;
+
+      await assert.that(async (): Promise<any> => await limes.verifyTokenInWebsocketUpgradeRequest({
+        issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
+        upgradeRequest
+      })).is.throwingAsync();
+    });
+
+    test('throws an error for tokens that were issued by an unknown identity provider.', async (): Promise<void> => {
+      const otherLimes = new Limes({
+        identityProviders: [ identityProviderUnknown ]
+      });
+
+      const token = otherLimes.issueToken({
+        issuer: 'https://auth.example.com',
+        subject: 'jane.doe'
+      });
+
+      const upgradeRequest: Request = {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      } as unknown as Request;
+
+      await assert.that(async (): Promise<any> => await limes.verifyTokenInWebsocketUpgradeRequest({
+        issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
+        upgradeRequest
+      })).is.throwingAsync();
+    });
+
+    test('returns a decoded token for valid tokens.', async (): Promise<void> => {
+      const token = limes.issueToken({
+        issuer: 'https://auth.thenativeweb.io',
+        subject: 'jane.doe'
+      });
+
+      const upgradeRequest: Request = {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      } as unknown as Request;
+
+      const result = await limes.verifyTokenInWebsocketUpgradeRequest({
+        issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
+        upgradeRequest
+      });
+
+      assert.that(result.token).is.equalTo(token);
+      assert.that(result.user.id).is.equalTo('jane.doe');
+      assert.that(result.user.claims.sub).is.equalTo('jane.doe');
+      assert.that(result.user.claims.iss).is.equalTo('https://auth.thenativeweb.io');
     });
   });
 });

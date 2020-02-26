@@ -1,6 +1,6 @@
 import { Claims } from './Claims';
 import { IdentityProvider } from './IdentityProvider';
-import { RequestHandler } from 'express';
+import { Request, RequestHandler } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 
 declare global {
@@ -215,6 +215,61 @@ class Limes {
       /* eslint-enable no-param-reassign */
 
       next();
+    };
+  }
+
+  public async verifyTokenInWebsocketUpgradeRequest ({ issuerForAnonymousTokens, upgradeRequest }: {
+    issuerForAnonymousTokens: string;
+    upgradeRequest: Request;
+  }): Promise<{ token: string; user: { id: string; claims: Claims } }> {
+    let token;
+
+    const authorizationHeader = upgradeRequest.headers.authorization;
+
+    if (authorizationHeader) {
+      const [ authorizationType, authorizationValue ] = authorizationHeader.split(' ');
+
+      if (authorizationType === 'Bearer') {
+        token = authorizationValue;
+      }
+    }
+
+    let decodedToken;
+
+    if (token) {
+      try {
+        decodedToken = await this.verifyToken({ token });
+      } catch {
+        throw new Error('Token not decodable.');
+      }
+    } else {
+      const payload = {
+        [`${issuerForAnonymousTokens}/is-anonymous`]: true
+      };
+
+      let subject = 'anonymous';
+
+      if (upgradeRequest.headers['x-anonymous-id']) {
+        subject += `-${upgradeRequest.headers['x-anonymous-id']}`;
+      }
+
+      ({ token, decodedToken } = Limes.issueUntrustedToken({
+        issuer: issuerForAnonymousTokens,
+        subject,
+        payload
+      }));
+    }
+
+    if (!decodedToken) {
+      throw new Error('Token invalid.');
+    }
+
+    return {
+      token,
+      user: {
+        id: decodedToken.sub,
+        claims: decodedToken
+      }
     };
   }
 }

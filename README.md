@@ -156,6 +156,23 @@ This issued token uses `anonymous-<uuid>` for the `sub` property.
 
 If both a token and an anonymous id are provided, the anonymous id is ignored.
 
+## Using it for websockets
+
+To authenticate websockets requests, call `verifyTokenInWebsocketUpgradeRequest`.
+
+```javascript
+server.on('upgrade', async (request, socket, head) => {
+  const result = await limes.verifyTokenInWebsocketUpgradeRequest({
+    issuerForAnonymousTokens: 'https://anonymous.thenativeweb.io',
+    upgradeRequest: request
+  })
+  
+  ws.handleUpgrade(request, socket, head, () => {
+    // ...
+  });
+})
+```
+
 ## Running the build
 
 ```shell
