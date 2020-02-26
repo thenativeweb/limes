@@ -1,7 +1,7 @@
 import { Claims } from './Claims';
 import { IdentityProvider } from './IdentityProvider';
-import { Request, RequestHandler } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
+import { Request, RequestHandler } from 'express';
 
 declare global {
   /* eslint-disable @typescript-eslint/no-namespace */
