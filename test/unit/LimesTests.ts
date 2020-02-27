@@ -387,10 +387,12 @@ suite('Limes', (): void => {
         }
       } as unknown as Request;
 
-      await assert.that(async (): Promise<any> => await limes.verifyTokenInWebsocketUpgradeRequest({
-        issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
-        upgradeRequest
-      })).is.throwingAsync();
+      await assert.that(async (): Promise<void> => {
+        await limes.verifyTokenInWebsocketUpgradeRequest({
+          issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
+          upgradeRequest
+        });
+      }).is.throwingAsync();
     });
 
     test('throws an error for tokens with invalid characters.', async (): Promise<void> => {
@@ -400,10 +402,12 @@ suite('Limes', (): void => {
         }
       } as unknown as Request;
 
-      await assert.that(async (): Promise<any> => await limes.verifyTokenInWebsocketUpgradeRequest({
-        issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
-        upgradeRequest
-      })).is.throwingAsync();
+      await assert.that(async (): Promise<void> => {
+        await limes.verifyTokenInWebsocketUpgradeRequest({
+          issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
+          upgradeRequest
+        });
+      }).is.throwingAsync();
     });
 
     test('throws an error for expired tokens.', async (): Promise<void> => {
@@ -422,10 +426,12 @@ suite('Limes', (): void => {
         }
       } as unknown as Request;
 
-      await assert.that(async (): Promise<any> => await limes.verifyTokenInWebsocketUpgradeRequest({
-        issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
-        upgradeRequest
-      })).is.throwingAsync();
+      await assert.that(async (): Promise<void> => {
+        await limes.verifyTokenInWebsocketUpgradeRequest({
+          issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
+          upgradeRequest
+        });
+      }).is.throwingAsync();
     });
 
     test('throws an error for tokens that were issued by an unknown identity provider.', async (): Promise<void> => {
@@ -444,10 +450,12 @@ suite('Limes', (): void => {
         }
       } as unknown as Request;
 
-      await assert.that(async (): Promise<any> => await limes.verifyTokenInWebsocketUpgradeRequest({
-        issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
-        upgradeRequest
-      })).is.throwingAsync();
+      await assert.that(async (): Promise<void> => {
+        await limes.verifyTokenInWebsocketUpgradeRequest({
+          issuerForAnonymousTokens: 'https://untrusted.thenativeweb.io',
+          upgradeRequest
+        });
+      }).is.throwingAsync();
     });
 
     test('returns a decoded token for valid tokens.', async (): Promise<void> => {
