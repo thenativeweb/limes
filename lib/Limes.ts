@@ -240,7 +240,7 @@ class Limes {
       try {
         decodedToken = await this.verifyToken({ token });
       } catch {
-        throw new Error('Token not decodable.');
+        throw new Error('Failed to decode token.');
       }
     } else {
       const payload = {
