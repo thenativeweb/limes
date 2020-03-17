@@ -27,7 +27,7 @@
     "@types/supertest": "2.0.8",
     "assertthat": "5.1.0",
     "express": "4.17.1",
-    "roboter": "11.1.10",
+    "roboter": "11.1.11",
     "semantic-release-configuration": "1.0.18",
     "supertest": "4.0.2",
     "uuidv4": "6.0.6"
