@@ -129,13 +129,16 @@ class Limes {
             algorithms: [ 'RS256' ],
             issuer: identityProvider.issuer
           },
-          (err: VerifyErrors | undefined, verifiedToken: string | Record<string, any>): void => {
+          (err: VerifyErrors | null, verifiedToken: Record<string, any> | undefined): void => {
             if (err) {
               return reject(new Error('Failed to verify token.'));
             }
 
             if (typeof verifiedToken === 'string') {
               throw new Error('Token payload malformed.');
+            }
+            if (!verifiedToken) {
+              throw new Error('Token could not be decoded.');
             }
             if (!verifiedToken.sub) {
               throw new Error('Token payload does not contain sub.');
