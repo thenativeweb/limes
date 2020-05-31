@@ -1,3 +1,10 @@
+## [6.0.3](https://github.com/thenativeweb/limes/compare/6.0.2...6.0.3) (2020-05-31)
+
+
+### Bug Fixes
+
+* Fix dependencies. ([65cde1e](https://github.com/thenativeweb/limes/commit/65cde1ee271df2fc4dbb05704d8a9daebcf1d038))
+
 ## [6.0.2](https://github.com/thenativeweb/limes/compare/6.0.1...6.0.2) (2020-02-18)
 
 
