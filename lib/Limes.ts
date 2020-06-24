@@ -167,6 +167,10 @@ class Limes {
       const authorizationHeader = req.headers.authorization,
             authorizationQuery = req.query.token;
 
+      if (typeof authorizationQuery !== 'string' && typeof authorizationQuery !== 'undefined') {
+        return res.status(400).end();
+      }
+
       if (authorizationHeader) {
         const [ authorizationType, authorizationValue ] = authorizationHeader.split(' ');
 
@@ -192,10 +196,16 @@ class Limes {
 
         let subject = 'anonymous';
 
+        const { anonymousId } = req.query;
+
         if (req.headers['x-anonymous-id']) {
           subject += `-${req.headers['x-anonymous-id']}`;
-        } else if (req.query.anonymousId) {
-          subject += `-${req.query.anonymousId}`;
+        } else if (anonymousId) {
+          if (typeof anonymousId !== 'string') {
+            return res.status(400).end();
+          }
+
+          subject += `-${anonymousId}`;
         }
 
         ({ token, decodedToken } = Limes.issueUntrustedToken({
