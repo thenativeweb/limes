@@ -24,7 +24,7 @@
     "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {
-    "@types/supertest": "2.0.9",
+    "@types/supertest": "2.0.10",
     "assertthat": "5.1.1",
     "express": "4.17.1",
     "roboter": "11.2.1",
