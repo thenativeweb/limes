@@ -5,7 +5,7 @@ import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import request from 'supertest';
-import { uuid } from 'uuidv4';
+import { v4 } from 'uuid';
 import { IdentityProvider, Limes } from '../../lib/Limes';
 
 /* eslint-disable no-sync */
@@ -224,7 +224,7 @@ suite('Limes', (): void => {
       });
 
       test('returns an anonymous with the provided id for non-authenticated requests.', async (): Promise<void> => {
-        const anonymousId = uuid();
+        const anonymousId = v4();
         const { status, body } = await request(app).
           get('/').
           set('accept', 'application/json').
@@ -239,7 +239,7 @@ suite('Limes', (): void => {
       });
 
       test('returns an anonymous with the provided id sent using the query string for non-authenticated requests.', async (): Promise<void> => {
-        const anonymousId = uuid();
+        const anonymousId = v4();
         const { status, body } = await request(app).
           get(`/?anonymousId=${anonymousId}`).
           set('accept', 'application/json');
