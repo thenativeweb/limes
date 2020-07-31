@@ -25,12 +25,13 @@
   },
   "devDependencies": {
     "@types/supertest": "2.0.10",
+    "@types/uuid": "8.0.0",
     "assertthat": "5.2.1",
     "express": "4.17.1",
     "roboter": "11.2.11",
     "semantic-release-configuration": "1.0.20",
     "supertest": "4.0.2",
-    "uuidv4": "6.2.1"
+    "uuid": "8.3.0"
   },
   "repository": {
     "type": "git",
