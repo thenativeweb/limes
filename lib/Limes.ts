@@ -150,7 +150,7 @@ class Limes {
             });
           }
         );
-      } catch (ex) {
+      } catch (ex: unknown) {
         reject(ex);
       }
     });
