@@ -88,7 +88,7 @@ suite('Limes', (): void => {
         subject: 'jane.doe'
       });
 
-      const decodedToken = jwt.verify(token, keys.thenativeweb.certificate, { issuer: 'https://auth.thenativeweb.io' }) as { [key: string]: any};
+      const decodedToken = jwt.verify(token, keys.thenativeweb.certificate, { issuer: 'https://auth.thenativeweb.io' }) as Record<string, any>;
 
       assert.that(decodedToken.iss).is.equalTo('https://auth.thenativeweb.io');
       assert.that(decodedToken.sub).is.equalTo('jane.doe');
@@ -103,7 +103,7 @@ suite('Limes', (): void => {
         }
       });
 
-      const decodedToken = jwt.verify(token, keys.thenativeweb.certificate, { issuer: 'https://auth.thenativeweb.io' }) as { [key: string]: any};
+      const decodedToken = jwt.verify(token, keys.thenativeweb.certificate, { issuer: 'https://auth.thenativeweb.io' }) as Record<string, any>;
 
       assert.that(decodedToken.iss).is.equalTo('https://auth.thenativeweb.io');
       assert.that(decodedToken.sub).is.equalTo('jane.doe');
@@ -118,7 +118,7 @@ suite('Limes', (): void => {
         subject: 'jane.doe'
       }) as {
         token: string;
-        decodedToken: { [key: string]: any};
+        decodedToken: Record<string, any>;
       };
 
       assert.that(token).is.startingWith('ey');
@@ -135,7 +135,7 @@ suite('Limes', (): void => {
         }
       }) as {
         token: string;
-        decodedToken: { [key: string]: any};
+        decodedToken: Record<string, any>;
       };
 
       assert.that(token).is.startingWith('ey');
