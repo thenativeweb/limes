@@ -30,7 +30,7 @@
     "express": "4.17.1",
     "roboter": "11.4.3",
     "semantic-release-configuration": "1.0.23",
-    "supertest": "5.0.0",
+    "supertest": "6.0.0",
     "uuid": "8.3.1"
   },
   "repository": {
