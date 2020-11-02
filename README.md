@@ -156,7 +156,7 @@ This issued token uses `anonymous-<uuid>` for the `sub` property.
 
 If both a token and an anonymous id are provided, the anonymous id is ignored.
 
-## Running the build
+## Running the quality assurance
 
 ```shell
 $ npx roboter
