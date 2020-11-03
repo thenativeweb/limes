@@ -1,3 +1,10 @@
+## [6.0.6](https://github.com/thenativeweb/limes/compare/6.0.5...6.0.6) (2020-11-03)
+
+
+### Bug Fixes
+
+* Fix headline for robot section in readme. ([#225](https://github.com/thenativeweb/limes/issues/225)) ([9447fae](https://github.com/thenativeweb/limes/commit/9447fae62e80bca0a34419e499d5cc6e057cdaf3))
+
 ## [6.0.5](https://github.com/thenativeweb/limes/compare/6.0.4...6.0.5) (2020-09-02)
 
 
