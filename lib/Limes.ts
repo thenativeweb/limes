@@ -4,7 +4,7 @@ import { RequestHandler } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 
 declare global {
-  /* eslint-disable @typescript-eslint/no-namespace */
+  // eslint-disable @typescript-eslint/no-namespace,@typescript-eslint/no-unused-vars
   namespace Express {
     export interface Request {
       token?: string;
@@ -14,7 +14,6 @@ declare global {
       };
     }
   }
-  /* eslint-enable @typescript-eslint/no-namespace */
 }
 
 class Limes {
