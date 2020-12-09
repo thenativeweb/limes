@@ -31,7 +31,7 @@
     "roboter": "11.5.26",
     "semantic-release-configuration": "1.0.28",
     "supertest": "6.0.1",
-    "uuid": "8.3.1"
+    "uuid": "8.3.2"
   },
   "repository": {
     "type": "git",
