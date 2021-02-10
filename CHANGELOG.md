@@ -1,3 +1,10 @@
+# [6.1.0](https://github.com/thenativeweb/limes/compare/6.0.9...6.1.0) (2021-02-10)
+
+
+### Features
+
+* Add logger ([#277](https://github.com/thenativeweb/limes/issues/277)) ([f684300](https://github.com/thenativeweb/limes/commit/f684300b9c2a4a55f9b2ee3f59e1f2e302c46816))
+
 ## [6.0.9](https://github.com/thenativeweb/limes/compare/6.0.8...6.0.9) (2021-01-13)
 
 
