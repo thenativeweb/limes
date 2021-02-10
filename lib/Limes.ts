@@ -133,17 +133,21 @@ class Limes {
           },
           (err: VerifyErrors | null, verifiedToken: Record<string, any> | undefined): void => {
             if (err) {
-              throw new Error(err.message);
+              this.logger.error(err.message);
+
+              return reject(new Error('Failed to verify token.'));
             }
 
             if (typeof verifiedToken === 'string') {
-              throw new Error('Token payload malformed.');
+              return reject(new Error('Token payload malformed.'));
             }
+
             if (!verifiedToken) {
-              throw new Error('Token could not be decoded.');
+              return reject(new Error('Token could not be decoded.'));
             }
+
             if (!verifiedToken.sub) {
-              throw new Error('Token payload does not contain sub.');
+              return reject(new Error('Token payload does not contain sub.'));
             }
 
             resolve({
