@@ -1,4 +1,5 @@
 import { Claims } from './Claims';
+import { flaschenpost } from 'flaschenpost';
 import { IdentityProvider } from './IdentityProvider';
 import { RequestHandler } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
@@ -18,6 +19,8 @@ declare global {
 
 class Limes {
   public identityProviders: IdentityProvider[];
+
+  private readonly logger = flaschenpost.getLogger();
 
   public constructor ({ identityProviders }: {
     identityProviders: IdentityProvider[];
@@ -130,17 +133,21 @@ class Limes {
           },
           (err: VerifyErrors | null, verifiedToken: Record<string, any> | undefined): void => {
             if (err) {
+              this.logger.error(err.message);
+
               return reject(new Error('Failed to verify token.'));
             }
 
             if (typeof verifiedToken === 'string') {
-              throw new Error('Token payload malformed.');
+              return reject(new Error('Token payload malformed.'));
             }
+
             if (!verifiedToken) {
-              throw new Error('Token could not be decoded.');
+              return reject(new Error('Token could not be decoded.'));
             }
+
             if (!verifiedToken.sub) {
-              throw new Error('Token payload does not contain sub.');
+              return reject(new Error('Token payload does not contain sub.'));
             }
 
             resolve({
@@ -185,7 +192,11 @@ class Limes {
       if (token) {
         try {
           decodedToken = await this.verifyToken({ token });
-        } catch {
+        } catch (ex: unknown) {
+          if (ex instanceof Error) {
+            this.logger.error(ex.message);
+          }
+
           return res.status(401).end();
         }
       } else {
@@ -215,6 +226,8 @@ class Limes {
       }
 
       if (!decodedToken) {
+        this.logger.error('Failed to verify token.');
+
         return res.status(400).end();
       }
 
