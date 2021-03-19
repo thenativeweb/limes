@@ -1,3 +1,10 @@
+## [6.1.1](https://github.com/thenativeweb/limes/compare/6.1.0...6.1.1) (2021-03-19)
+
+
+### Bug Fixes
+
+* bump @types/jsonwebtoken from 8.5.0 to 8.5.1 ([#321](https://github.com/thenativeweb/limes/issues/321)) ([e1cdb04](https://github.com/thenativeweb/limes/commit/e1cdb0427876d057992ddcff55c556e0fda0582c))
+
 # [6.1.0](https://github.com/thenativeweb/limes/compare/6.0.9...6.1.0) (2021-02-10)
 
 
