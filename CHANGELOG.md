@@ -1,3 +1,10 @@
+## [6.1.2](https://github.com/thenativeweb/limes/compare/6.1.1...6.1.2) (2021-03-25)
+
+
+### Bug Fixes
+
+* Migrate from master to main. ([#330](https://github.com/thenativeweb/limes/issues/330)) ([a6ecf0b](https://github.com/thenativeweb/limes/commit/a6ecf0b03dfeb279c49bfe50e1ca611875436773))
+
 ## [6.1.1](https://github.com/thenativeweb/limes/compare/6.1.0...6.1.1) (2021-03-19)
 
 
