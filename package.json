@@ -33,7 +33,7 @@
     "assertthat": "5.2.8",
     "express": "4.17.1",
     "flaschenpost": "5.0.15",
-    "roboter": "11.6.35",
+    "roboter": "11.6.37",
     "semantic-release-configuration": "2.0.0",
     "supertest": "6.1.3",
     "uuid": "8.3.2"
