@@ -61,7 +61,7 @@ suite('Limes', (): void => {
 
   suite('IdentityProvider', (): void => {
     test('is the IdentityProvider constructor.', async (): Promise<void> => {
-      assert.that(IdentityProvider).is.sameAs(IdentityProvider);
+      assert.that(IdentityProvider).is.identicalTo(IdentityProvider);
     });
   });
 
@@ -77,7 +77,7 @@ suite('Limes', (): void => {
         issuer: 'https://auth.thenativeweb.io'
       });
 
-      assert.that(identityProvider).is.sameAs(identityProviderThenativeweb);
+      assert.that(identityProvider).is.identicalTo(identityProviderThenativeweb);
     });
   });
 
@@ -216,7 +216,7 @@ suite('Limes', (): void => {
           set('accept', 'application/json');
 
         assert.that(status).is.equalTo(200);
-        assert.that(body.token).is.startingWith('ey');
+        assert.that(body.token as string).is.startingWith('ey');
         assert.that(body.user.id).is.equalTo('anonymous');
         assert.that(body.user.claims.sub).is.equalTo('anonymous');
         assert.that(body.user.claims.iss).is.equalTo('https://untrusted.thenativeweb.io');
@@ -231,7 +231,7 @@ suite('Limes', (): void => {
           set('x-anonymous-id', anonymousId);
 
         assert.that(status).is.equalTo(200);
-        assert.that(body.token).is.startingWith('ey');
+        assert.that(body.token as string).is.startingWith('ey');
         assert.that(body.user.id).is.equalTo(`anonymous-${anonymousId}`);
         assert.that(body.user.claims.sub).is.equalTo(`anonymous-${anonymousId}`);
         assert.that(body.user.claims.iss).is.equalTo('https://untrusted.thenativeweb.io');
@@ -245,7 +245,7 @@ suite('Limes', (): void => {
           set('accept', 'application/json');
 
         assert.that(status).is.equalTo(200);
-        assert.that(body.token).is.startingWith('ey');
+        assert.that(body.token as string).is.startingWith('ey');
         assert.that(body.user.id).is.equalTo(`anonymous-${anonymousId}`);
         assert.that(body.user.claims.sub).is.equalTo(`anonymous-${anonymousId}`);
         assert.that(body.user.claims.iss).is.equalTo('https://untrusted.thenativeweb.io');
