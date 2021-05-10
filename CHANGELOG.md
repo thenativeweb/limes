@@ -1,3 +1,10 @@
+## [6.1.3](https://github.com/thenativeweb/limes/compare/6.1.2...6.1.3) (2021-05-10)
+
+
+### Bug Fixes
+
+* bump hosted-git-info from 2.8.8 to 2.8.9 ([#361](https://github.com/thenativeweb/limes/issues/361)) ([ce4fdfd](https://github.com/thenativeweb/limes/commit/ce4fdfdc3caebe4c734ad235025cb1a908056d49))
+
 ## [6.1.2](https://github.com/thenativeweb/limes/compare/6.1.1...6.1.2) (2021-03-25)
 
 
