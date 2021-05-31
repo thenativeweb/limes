@@ -1,3 +1,10 @@
+## [6.1.4](https://github.com/thenativeweb/limes/compare/6.1.3...6.1.4) (2021-05-31)
+
+
+### Bug Fixes
+
+* bump @types/express from 4.17.11 to 4.17.12 ([#370](https://github.com/thenativeweb/limes/issues/370)) ([991cd31](https://github.com/thenativeweb/limes/commit/991cd3181f9b2000b13d56dd6800e6ff6ce6776a))
+
 ## [6.1.3](https://github.com/thenativeweb/limes/compare/6.1.2...6.1.3) (2021-05-10)
 
 
