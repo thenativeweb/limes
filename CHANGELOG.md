@@ -1,3 +1,10 @@
+## [6.1.5](https://github.com/thenativeweb/limes/compare/6.1.4...6.1.5) (2021-06-08)
+
+
+### Bug Fixes
+
+* bump glob-parent from 5.1.1 to 5.1.2 ([#378](https://github.com/thenativeweb/limes/issues/378)) ([8603b55](https://github.com/thenativeweb/limes/commit/8603b551a73bdcb7b33c44508ee6277163d293d0))
+
 ## [6.1.4](https://github.com/thenativeweb/limes/compare/6.1.3...6.1.4) (2021-05-31)
 
 
