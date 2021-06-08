@@ -1,3 +1,10 @@
+## [6.1.6](https://github.com/thenativeweb/limes/compare/6.1.5...6.1.6) (2021-06-08)
+
+
+### Bug Fixes
+
+* bump trim-newlines from 3.0.0 to 3.0.1 ([#377](https://github.com/thenativeweb/limes/issues/377)) ([141a8d2](https://github.com/thenativeweb/limes/commit/141a8d240f6e8968cd054da60b94263eb29a9e00))
+
 ## [6.1.5](https://github.com/thenativeweb/limes/compare/6.1.4...6.1.5) (2021-06-08)
 
 
