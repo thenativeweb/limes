@@ -1,3 +1,10 @@
+## [6.1.7](https://github.com/thenativeweb/limes/compare/6.1.6...6.1.7) (2021-06-10)
+
+
+### Bug Fixes
+
+* bump normalize-url from 6.0.0 to 6.0.1 ([#379](https://github.com/thenativeweb/limes/issues/379)) ([1bb8b3c](https://github.com/thenativeweb/limes/commit/1bb8b3cbd5f08530a09d2b8581c9ee17df3ae3c0))
+
 ## [6.1.6](https://github.com/thenativeweb/limes/compare/6.1.5...6.1.6) (2021-06-08)
 
 
