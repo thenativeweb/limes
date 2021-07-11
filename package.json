@@ -23,8 +23,8 @@
   "main": "build/lib/Limes.js",
   "types": "build/lib/Limes.d.ts",
   "dependencies": {
-    "@types/express": "4.17.12",
-    "@types/jsonwebtoken": "8.5.1",
+    "@types/express": "4.17.13",
+    "@types/jsonwebtoken": "8.5.4",
     "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {
