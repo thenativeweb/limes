@@ -114,6 +114,10 @@ class Limes {
       throw new Error('Token payload malformed.');
     }
 
+    if (!untrustedDecodedToken.iss) {
+      throw new Error('Issuer missing.');
+    }
+
     const identityProvider = this.getIdentityProviderByIssuer({
       issuer: untrustedDecodedToken.iss
     });
