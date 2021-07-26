@@ -1,3 +1,10 @@
+## [6.1.8](https://github.com/thenativeweb/limes/compare/6.1.7...6.1.8) (2021-07-26)
+
+
+### Bug Fixes
+
+* Handle missing iss field. ([d73d9c6](https://github.com/thenativeweb/limes/commit/d73d9c65ae9b7d86a85b1dd15c1902fa2e74671c))
+
 ## [6.1.7](https://github.com/thenativeweb/limes/compare/6.1.6...6.1.7) (2021-06-10)
 
 
