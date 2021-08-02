@@ -32,7 +32,7 @@
     "@types/uuid": "8.3.1",
     "assertthat": "6.3.9",
     "express": "4.17.1",
-    "flaschenpost": "5.0.41",
+    "flaschenpost": "5.0.43",
     "roboter": "11.7.8",
     "semantic-release-configuration": "2.0.5",
     "supertest": "6.1.4",
