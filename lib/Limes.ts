@@ -5,7 +5,7 @@ import { RequestHandler } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace,@typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     export interface Request {
       token?: string;
@@ -101,6 +101,7 @@ class Limes {
     let untrustedDecodedToken;
 
     try {
+      // eslint-disable-next-line prefer-const
       untrustedDecodedToken = jwt.decode(token);
     } catch {
       throw new Error('Failed to verify token.');

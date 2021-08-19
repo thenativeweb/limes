@@ -20,8 +20,12 @@
       "email": "m.fuerer@vtxmail.ch"
     }
   ],
+  "private": false,
   "main": "build/lib/Limes.js",
   "types": "build/lib/Limes.d.ts",
+  "engines": {
+    "node": ">= 16.7.0"
+  },
   "dependencies": {
     "@types/express": "4.17.13",
     "@types/jsonwebtoken": "8.5.4",
@@ -38,6 +42,7 @@
     "supertest": "6.1.5",
     "uuid": "8.3.2"
   },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git://github.com/thenativeweb/limes.git"
