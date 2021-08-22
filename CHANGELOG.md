@@ -1,3 +1,10 @@
+## [6.1.9](https://github.com/thenativeweb/limes/compare/6.1.8...6.1.9) (2021-08-22)
+
+
+### Bug Fixes
+
+* add include to tsconfig.json ([#404](https://github.com/thenativeweb/limes/issues/404)) ([6de7a09](https://github.com/thenativeweb/limes/commit/6de7a091cb2bd4f091ba8aa2653216cbb7d1d593))
+
 ## [6.1.8](https://github.com/thenativeweb/limes/compare/6.1.7...6.1.8) (2021-07-26)
 
 
