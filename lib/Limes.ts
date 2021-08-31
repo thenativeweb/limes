@@ -101,7 +101,6 @@ class Limes {
     let untrustedDecodedToken;
 
     try {
-      // eslint-disable-next-line prefer-const
       untrustedDecodedToken = jwt.decode(token);
     } catch {
       throw new Error('Failed to verify token.');
