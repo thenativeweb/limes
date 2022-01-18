@@ -36,7 +36,7 @@
     "flaschenpost": "5.0.49",
     "roboter": "12.6.2",
     "semantic-release-configuration": "2.0.5",
-    "supertest": "6.1.6",
+    "supertest": "6.2.1",
     "uuid": "8.3.2"
   },
   "scripts": {},
