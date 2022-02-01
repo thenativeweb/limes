@@ -1,3 +1,10 @@
+## [6.1.10](https://github.com/thenativeweb/limes/compare/6.1.9...6.1.10) (2022-02-01)
+
+
+### Bug Fixes
+
+* Update dependencies and fix type issues. ([#428](https://github.com/thenativeweb/limes/issues/428)) ([7d26816](https://github.com/thenativeweb/limes/commit/7d26816a2da86aeeb1960df642e6aad99ab9262b))
+
 ## [6.1.9](https://github.com/thenativeweb/limes/compare/6.1.8...6.1.9) (2021-08-22)
 
 
