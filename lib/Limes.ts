@@ -1,8 +1,8 @@
 import { Claims } from './Claims';
 import { flaschenpost } from 'flaschenpost';
 import { IdentityProvider } from './IdentityProvider';
+import jwt from 'jsonwebtoken';
 import { RequestHandler } from 'express';
-import jwt, { VerifyErrors } from 'jsonwebtoken';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -135,7 +135,7 @@ class Limes {
             algorithms: [ 'RS256' ],
             issuer: identityProvider.issuer
           },
-          (err: VerifyErrors | null, verifiedToken: Record<string, any> | undefined): void => {
+          (err, verifiedToken): void => {
             if (err) {
               this.logger.error(err.message);
 
@@ -178,7 +178,9 @@ class Limes {
             authorizationQuery = req.query.token;
 
       if (typeof authorizationQuery !== 'string' && typeof authorizationQuery !== 'undefined') {
-        return res.status(400).end();
+        res.status(400).end();
+
+        return;
       }
 
       if (authorizationHeader) {
@@ -201,7 +203,9 @@ class Limes {
             this.logger.error(ex.message);
           }
 
-          return res.status(401).end();
+          res.status(401).end();
+
+          return;
         }
       } else {
         const payload = {
@@ -216,7 +220,9 @@ class Limes {
           subject += `-${req.headers['x-anonymous-id']}`;
         } else if (anonymousId) {
           if (typeof anonymousId !== 'string') {
-            return res.status(400).end();
+            res.status(400).end();
+
+            return;
           }
 
           subject += `-${anonymousId}`;
@@ -232,7 +238,9 @@ class Limes {
       if (!decodedToken) {
         this.logger.error('Failed to verify token.');
 
-        return res.status(400).end();
+        res.status(400).end();
+
+        return;
       }
 
       /* eslint-disable no-param-reassign */
