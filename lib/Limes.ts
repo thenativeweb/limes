@@ -1,8 +1,11 @@
-import { Claims } from './Claims';
 import { flaschenpost } from 'flaschenpost';
-import { IdentityProvider } from './IdentityProvider';
+
 import jwt from 'jsonwebtoken';
+
 import { RequestHandler } from 'express';
+
+import { Claims } from './Claims';
+import { IdentityProvider } from './IdentityProvider';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -86,7 +89,7 @@ class Limes {
     }
 
     const token = jwt.sign(payload, identityProvider.privateKey, {
-      algorithm: 'RS256',
+      algorithm: identityProvider.algorithm,
       subject,
       issuer: identityProvider.issuer,
       expiresIn: identityProvider.expiresInMinutes * 60
@@ -132,7 +135,7 @@ class Limes {
           token,
           identityProvider.certificate,
           {
-            algorithms: [ 'RS256' ],
+            algorithms: [ identityProvider.algorithm ],
             issuer: identityProvider.issuer
           },
           (err, verifiedToken): void => {
